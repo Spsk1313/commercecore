@@ -1,8 +1,11 @@
 # Engineering evidence ledger
 
-**Principle:** Evidence beats adjectives. All entries must state what was actually executed or observed. No measurements or user claims have been captured yet for CommerceCore.
+**Principle:** Evidence beats adjectives. Local application and
+infrastructure verification has begun. No production deployment,
+performance benchmark, or external-user outcome has been verified.
 
 ## Entry template
+
 - **Date/time:**
 - **Feature/incident ID:**
 - **Claim / invariant:**
@@ -17,7 +20,50 @@
 - **Artifact link and next hypothesis:**
 
 ## Evidence score (internal, not public certification)
+
 E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated/CI demonstrated -> E4 deployed and operated -> E5 external use/review with consent and attributable outcome. Each capability can have different levels. Do not infer one level from another.
 
 ## Initial entries
-None. Previous WorkItem learning evidence is recorded in separate coach journal; it does not count as CommerceCore deployment or performance proof.
+
+### 2026-10-25 — COM-002: PostgreSQL development environment
+
+**Status:** Locally verified.
+
+**Environment:**
+
+- Ubuntu Linux
+- Docker Engine 29.7.2
+- Docker Compose 5.5.0
+- PostgreSQL 17 (official Docker image)
+
+**Configuration:**
+
+- PostgreSQL managed through Docker Compose.
+- Host connection bound to 127.0.0.1:5433.
+- Database files stored in a Docker named volume.
+- Local database password excluded from Git.
+
+**Verification performed:**
+
+1. `docker compose config --quiet` completed without errors.
+2. `docker compose ps` reported PostgreSQL as healthy.
+3. SQL query confirmed the database and user were both `commercecore`.
+4. Created a temporary `persistence_probe` table and inserted one record.
+5. Executed `docker compose down` to remove the container.
+6. Recreated the container using `docker compose up -d --wait db`.
+7. Queried the table and successfully retrieved the original record.
+8. Temporary probe table subsequently removed.
+
+**Observed result:**
+PostgreSQL retained the test record after container replacement.
+
+**Limitations:**
+
+- Spring Boot is not yet connected to PostgreSQL.
+- No database integration tests or database CI checks exist yet.
+- Backup and disaster recovery have not been tested.
+- No production deployment has occurred.
+
+**Next step:**
+Review and merge the PostgreSQL infrastructure pull request, then
+introduce Flyway-managed schema migrations.
