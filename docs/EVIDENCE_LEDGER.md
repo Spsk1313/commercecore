@@ -23,11 +23,17 @@ performance benchmark, or external-user outcome has been verified.
 
 E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated/CI demonstrated -> E4 deployed and operated -> E5 external use/review with consent and attributable outcome. Each capability can have different levels. Do not infer one level from another.
 
-## Initial entries
+## Verified implementation evidence
 
-### 2026-10-25 — COM-002: PostgreSQL development environment
+### 2026-10-26 — COM-002 backend bootstrap and CI
+- **GitHub:** [PR #1](https://github.com/Spsk1313/commercecore/pull/1), merged commit `ba058a1`; [passing CI run 40262686456](https://github.com/Spsk1313/commercecore/actions/runs/40262686456).
+- **User-observed local outputs:** `./mvnw test` ran one passing Spring Boot application-context test; `/actuator/health` returned HTTP 200 and `UP`.
+- **Scope:** Backend smoke-level reproducibility/CI (E3 for bootstrap only). Learner implemented and ran checks with code/review suggestions from coach; reviewer verified the PR and GitHub CI result.
+- **Unproved:** Commerce features, DB integration, negative security paths, production operation, load results or real users.
 
-**Status:** Locally verified.
+### 2026-10-25/26 — COM-002 PostgreSQL development environment
+
+**Status:** Locally verified; [PR #2](https://github.com/Spsk1313/commercecore/pull/2) merged as `0ec4cfc` on 2026-10-26.
 
 **Environment:**
 
@@ -52,10 +58,10 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 5. Executed `docker compose down` to remove the container.
 6. Recreated the container using `docker compose up -d --wait db`.
 7. Queried the table and successfully retrieved the original record.
-8. Temporary probe table subsequently removed.
+8. Temporary probe table subsequently removed (learner-reported; cleanup query output not captured).
 
 **Observed result:**
-PostgreSQL retained the test record after container replacement.
+PostgreSQL retained the test record after container replacement. This constitutes local infrastructure evidence (E2), not database integration in CI. [PR #2 backend CI run 40266833274](https://github.com/Spsk1313/commercecore/actions/runs/40266833274) passed without exercising PostgreSQL. Local experiment and setup were learner-executed following coaching; reviewer inspected outputs and the submitted Compose configuration.
 
 **Limitations:**
 
@@ -65,5 +71,4 @@ PostgreSQL retained the test record after container replacement.
 - No production deployment has occurred.
 
 **Next step:**
-Review and merge the PostgreSQL infrastructure pull request, then
-introduce Flyway-managed schema migrations.
+Introduce Flyway-managed schema migrations and automated database integration verification.

@@ -1,5 +1,11 @@
 # Changelog — verified engineering changes
 
+## 2026-10-26 — COM-002 environment/session handoff
+- [PR #1](https://github.com/Spsk1313/commercecore/pull/1) merged as `ba058a1`, establishing the local Spring Boot bootstrap and passing backend CI.
+- [PR #2](https://github.com/Spsk1313/commercecore/pull/2) merged as `0ec4cfc`, adding PostgreSQL 17 development infrastructure with locally observed connectivity and persistence.
+- Clarified README/runbook startup and teardown, evidence links, and outstanding work. PR #2 CI checks only the backend, not PostgreSQL.
+- No merchant/customer business features, migrations, deployed system, performance results, or validated external user outcomes yet.
+
 ## 2026-10-25 — Product inception and engineering baseline
 
 - Established initial product mission, module proposal, release-quality gates, delivery board, evidence and public-visibility workflows.
