@@ -1,21 +1,22 @@
 # Delivery board and change discipline
 
-**Snapshot:** 2026-10-26.
-**Status:** Initial implementation in progress. PRs #1 and #2 merged. Backend CI and local PostgreSQL persistence verified; no commerce business feature or deployment.
+**Snapshot:** 2026-10-27 (America/Toronto).
+**Status:** COM-002 in progress. PRs #1–#4 merged; backend, Docker Compose PostgreSQL, Flyway V1 and database integration CI verified. No commerce API, frontend, deployment or real users.
 
-## Most recent session handoff — 2026-10-26 (Toronto)
-- **Repository:** `main` and `origin/main` synchronized at `0ec4cfc`; clean worktree; merged feature branches removed (learner terminal output).
-- **Verified:** Spring Boot 4.1.2/Java 21 startup and context test, HTTP 200 Actuator health; [PR #1 CI](https://github.com/Spsk1313/commercecore/actions/runs/40262686456) passed. PostgreSQL 17 container healthy, successful SQL query and probe-row persistence across recreation; [PR #2 CI](https://github.com/Spsk1313/commercecore/actions/runs/40266833274) passed **backend tests only**. Probe table cleanup was learner-reported.
-- **Ownership/learning:** Learner wrote the implementation and executed local verification with coach review and provided commands. No delayed independent mastery assessment has yet been conducted.
-- **Next action (one step at a time):** Explain why database schema must be versioned, then inspect current Maven dependencies and plan a first Flyway migration on a fresh feature branch. Implement migration, inspect schema history, then add Spring DB connectivity and isolated integration tests.
-- **Not yet achieved:** Flyway/JDBC integration, merchant/product/order schema, React, authorization, deployed demo, production reliability/performance, real users.
+## Most recent session handoff — 2026-10-27 (Toronto)
+- **Repository:** `main` and `origin/main` synchronized at `6e3d326`; learner showed a clean worktree and only local/remote `main` branches after squash-merging PR #4.
+- **Implemented:** Spring Boot 4.1.2 / Java 21 backend, PostgreSQL 17 local Docker Compose volume, JDBC datasource with secret via environment variable, Flyway `V1__create_merchants.sql`, and `MerchantSchemaIntegrationTest` with PostgreSQL Testcontainers. Merchant table currently models only generated ID and display name, not tenant access controls.
+- **Verified:** Spring started locally, initialized Hikari connection pool, executed Flyway V1 and wrote successful migration history; learner inspected the table constraints and history via `psql`. Manually verified valid and rejected names. Local `env -u COMMERCECORE_DB_PASSWORD ./mvnw test`: **11 test executions passed** (one schema check, five negative, five positive). [PR #4 GitHub CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) passed on a separate runner. See [evidence ledger](EVIDENCE_LEDGER.md).
+- **Ownership/learning:** Learner implemented SQL, tests, and ran verification with coaching/review; learned schema migrations, database constraint boundaries, transaction isolation basics and test transaction rollback. Mentor authored this documentation handoff in a separate PR. Delayed independent mastery assessment not yet performed.
+- **Next action (one step at a time):** React + TypeScript frontend bootstrap for COM-002, then first browser-to-API-to-PostgreSQL integration. Preserve small checkpoints and CI discipline.
+- **Still unverified:** Auth/tenant isolation, product/order/checkout APIs, frontend, E2E, deployment, backup/restore, load/performance and external customer value.
 
 ## Backlog & status
 
 | ID      | Capability                                                          | Status      | Owner   | Proof / link                                                 | Next gate                                                                  |
 | ------- | ------------------------------------------------------------------- | ----------- | ------- | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
 | COM-001 | Feature specification, tenant model, API and concurrency invariants | In Progress | Learner | None                                                         | Design review + ADR                                                        |
-| COM-002 | Local full-stack baseline: React, Spring, PostgreSQL, Flyway, CI    | In Progress | Learner | PRs [#1](https://github.com/Spsk1313/commercecore/pull/1) and [#2](https://github.com/Spsk1313/commercecore/pull/2) merged; backend CI and local DB tested | Flyway, backend database integration, frontend and end-to-end verification |
+| COM-002 | Local full-stack baseline: React, Spring, PostgreSQL, Flyway, CI    | In Progress | Learner | PRs [#1](https://github.com/Spsk1313/commercecore/pull/1), [#2](https://github.com/Spsk1313/commercecore/pull/2), [#4](https://github.com/Spsk1313/commercecore/pull/4); [passing database CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) | React/TypeScript bootstrap, then browser → API → DB verification |
 | COM-003 | Merchant auth/store isolation                                       | Planned     | Learner | None                                                         | Negative cross-tenant tests                                                |
 | COM-004 | Merchant catalog and inventory                                      | Planned     | Learner | None                                                         | API/UI contract + DB constraints                                           |
 | COM-005 | Public storefront and cart                                          | Planned     | Learner | None                                                         | End-to-end browser flow                                                    |
