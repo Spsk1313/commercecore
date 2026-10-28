@@ -1,40 +1,66 @@
 # Operations and reproducibility runbook
 
-**Status:** Local backend and PostgreSQL environment verified as of 2026-10-26. No deployed service or production availability.
+**Status (2026-10-27):** Local Spring Boot ↔ PostgreSQL connection, Flyway V1 and Testcontainers tests verified; GitHub Actions backend CI passed. No deployed service or production availability.
 
 ## Environments
-- Local: Java 21 / Spring Boot 4.1.2 backend; PostgreSQL 17 Docker Compose service, not yet connected to the backend.
-- Test: isolated disposable PostgreSQL via Testcontainers (to implement).
-- Deployment: TBD; HTTPS, secrets, budgets and recovery plan required before real users.
+- **Local:** Java 21 / Spring Boot 4.1.2; PostgreSQL 17 via Docker Compose with loopback host port `127.0.0.1:5433`, database and user `commercecore`, named persistent volume.
+- **Automated tests:** PostgreSQL 17 in disposable Testcontainers instances; Docker required. Spring Boot `@ServiceConnection` configures the test datasource independently of the local `.env`.
+- **CI:** `.github/workflows/backend-ci.yml` uses Java 21 on an Ubuntu runner and invokes `./mvnw -B test`; [PR #4 run 40616327894](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) succeeded.
+- **Production/deployment:** Not implemented. HTTPS, secrets strategy, backup/recovery and secure authorization are open work.
 
-## Verified local operating procedure
-From the repository root:
+## Local first-time setup and application startup
+
+Execute from repository root unless stated otherwise:
+
 ```bash
 cp .env.example .env
-# Edit .env with a private COMMERCECORE_DB_PASSWORD.
+# Set your own private COMMERCECORE_DB_PASSWORD value in .env.
 docker compose config --quiet
 docker compose up -d --wait db
 docker compose ps
-docker compose exec -T db psql -U commercecore -d commercecore -c "SELECT current_database(), current_user;"
-(cd backend && ./mvnw test)
+
+# Export variables into the shell that launches the Java process.
+# Source only a .env file you created/trust, using shell-compatible KEY=value syntax.
+set -a
+. ./.env
+set +a
+
+cd backend
+./mvnw spring-boot:run
 ```
 
-The database is exposed only on `127.0.0.1:5433` (container port 5432); its database and user names are `commercecore`. Keep `.env` out of Git. PostgreSQL initializes its password on an empty data directory; editing `.env` afterward does **not** rotate the user's password inside an existing volume.
+`.env` is ignored by Git and consumed by Docker Compose, but it is **not automatically inherited** by an independently launched Maven/Java process. The application's `application.yaml` references `${COMMERCECORE_DB_PASSWORD}`; never commit the real password or print it in logs. This runbook's local URL/username are development-only values.
 
-Use `docker compose down` to remove the local container while preserving its named data volume. **Do not use `docker compose down -v` for normal shutdown**, as it removes the volume. A probe-row experiment demonstrated persistence across container recreation, **not** backup or major-version upgrade safety.
+Spring Boot's JDBC datasource connects to `jdbc:postgresql://127.0.0.1:5433/commercecore`. Flyway discovers `src/main/resources/db/migration/V1__create_merchants.sql`, creates `public.flyway_schema_history` if necessary, and records successful execution. The first migration creates `public.merchants` with generated identity ID and non-null/nonblank/whitespace/control-character name constraints.
 
-Running `./mvnw spring-boot:run` from `backend/` and requesting `http://localhost:8080/actuator/health` gave HTTP 200 locally. Existing GitHub Actions run Maven backend tests only; CI does not yet start PostgreSQL or check Flyway migrations.
+### Inspect local PostgreSQL and migrations
 
-## Fill in as later capabilities are verified
-- Prerequisites and version pins (Java/Node/Postgres/Docker).
-- Exact bootstrap commands / migrations, and how to verify schema history.
-- Configuration variables with **names only**; never passwords or tokens.
-- How to reproduce a request from browser to database and inspect logs/traces.
-- CI pipeline and dependency scanning; local parity limits.
-- Health/readiness behavior; what fails when DB is down.
-- Monitoring: log fields (trace/request ID, endpoint, status, latency; omit private data), error counters, latency distributions, DB pool and queue metrics only when implemented.
-- Backup strategy, restore drill, rollback/migration compatibility and incident recovery.
-- Capacity baseline and load-test methodology.
+In another terminal from repository root:
+
+```bash
+docker compose exec -T db psql -U commercecore -d commercecore -c '\\d+ public.merchants'
+docker compose exec -T db psql -U commercecore -d commercecore -c \
+  "SELECT installed_rank, version, description, success FROM public.flyway_schema_history ORDER BY installed_rank;"
+```
+
+The learner observed V1 with `success = true` and inspected all three named merchant-name checks on 2026-10-27. **Do not modify an already-applied versioned migration**; add a new version for schema changes so checksum validation remains meaningful.
+
+### Run isolated integration tests
+
+With Docker Engine available, from `backend/`:
+
+```bash
+env -u COMMERCECORE_DB_PASSWORD ./mvnw test
+```
+
+The test class `persistence/MerchantSchemaIntegrationTest` supplies a PostgreSQL Testcontainers service connection, runs Flyway, verifies the table exists, rejects five invalid-name inputs, and inserts/reads five valid names with test-managed transaction rollback. Eleven test executions passed locally; [CI on PR #4](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) passed on a GitHub-hosted runner without local credentials. No Compose database or preexisting test records are needed.
+
+Use `docker compose down` (from the repository root) to remove local containers while keeping the named data volume. **Never use `docker compose down -v` for routine shutdown**: it removes the named volume. Changing `.env` later does not rotate credentials already initialized within an existing PostgreSQL data volume.
+
+## Limitations and future operational work
+- Local Spring Boot startup and health are verified; no publicly deployed service, HTTP business API or browser-to-database flow exists.
+- Database constraints are tested, but merchant identity/tenant isolation, backup restore, migration downgrade procedures, concurrency and production security remain unverified.
+- Define deployment parameters, secret rotation, HTTPS, observability, runbooks and backup/recovery drills before handling real users.
 
 ## Incident record template
 Time, symptom, blast radius, hypothesis, exact reproducer, logs/metrics, root cause, mitigation, validation, prevention, affected ADR, supporting commits. Synthetic faults must be labeled simulated.

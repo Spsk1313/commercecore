@@ -1,5 +1,11 @@
 # Changelog — verified engineering changes
 
+## 2026-10-27 — COM-002 Flyway and PostgreSQL integration tests
+- [PR #4](https://github.com/Spsk1313/commercecore/pull/4) squash-merged as `6e3d326`; introduced Spring Boot JDBC/PostgreSQL/Flyway and V1 `merchants` schema with named merchant-name checks.
+- Added Testcontainers PostgreSQL integration tests: table-existence verification, five invalid merchant names rejected, five valid names persisted/read in rolled-back transactions.
+- Local tests: 11 passed; [GitHub Actions backend CI run 40616327894](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) passed without the developer's `.env`.
+- Verified local Spring Boot startup, Flyway migration history and SQL constraints. This is backend/database evidence only; React, commerce APIs, authorization, deployment and real-user value remain unverified.
+
 ## 2026-10-26 — COM-002 environment/session handoff
 - [PR #1](https://github.com/Spsk1313/commercecore/pull/1) merged as `ba058a1`, establishing the local Spring Boot bootstrap and passing backend CI.
 - [PR #2](https://github.com/Spsk1313/commercecore/pull/2) merged as `0ec4cfc`, adding PostgreSQL 17 development infrastructure with locally observed connectivity and persistence.
@@ -33,7 +39,7 @@
 - Added PostgreSQL health checking.
 - Verified SQL connectivity and persistence across container recreation.
 - Removed temporary persistence-test table.
-- Spring Boot database connectivity and Flyway migrations remain pending.
+- At this 2026-10-25/26 checkpoint, Spring Boot database connectivity and Flyway migrations were still pending; completed later in PR #4 (2026-10-27).
 
 ## Change template
 

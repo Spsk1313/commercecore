@@ -25,6 +25,16 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 
 ## Verified implementation evidence
 
+### 2026-10-27 — COM-002 JDBC, Flyway V1 and PostgreSQL CI integration
+
+- **Changes:** [PR #4](https://github.com/Spsk1313/commercecore/pull/4), merged into `main` as `6e3d326`. Adds Spring Boot JDBC/PostgreSQL/Flyway, datasource password placeholder, `V1__create_merchants.sql`, and Testcontainers-backed `MerchantSchemaIntegrationTest`.
+- **Environment:** Java 21, Spring Boot 4.1.2, PostgreSQL 17 (local server log reported 17.10), Maven, Ubuntu/Docker; GitHub-hosted Ubuntu backend CI.
+- **Observed local runtime:** Spring Boot started at `localhost:8080`, Hikari established a JDBC connection, Flyway reported applying V1 successfully and creating `public.flyway_schema_history`. Learner queried `\\d+ public.merchants` and history showing version 1, description `create merchants`, and `success = t`.
+- **Manual negative/positive data experiments:** `'Café Québec'` inserted successfully within a rolled-back transaction. Whitespace-only, padded names and empty string failed PostgreSQL checks; generated identity sequence values continued to advance despite rollback or rejection.
+- **Automated verification:** Local `env -u COMMERCECORE_DB_PASSWORD ./mvnw test` reported **11 executions, 0 failures/errors**: 1 metadata table-existence check, 5 invalid-name cases, 5 accepted-name cases (transactional rollback). GitHub Actions [Backend CI run 40616327894](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) completed successfully on PR #4, exercising Testcontainers PostgreSQL without local `.env`.
+- **Evidence level:** E3 for the narrow database-migration and integration-test capability; **not** E3 for complete commerce product functionality. Learner wrote and ran the code with mentor-supplied prompts/examples and review; no independent delayed assessment.
+- **Limitations:** V1 merchants table has only ID/name, not authorization or complete tenant schema. Negative tests currently assert Spring's exception type rather than exact PostgreSQL constraint identity. No auth, browser flow, CI deployment, real customer usage, concurrency tests or production restore evidence.
+
 ### 2026-10-26 — COM-002 backend bootstrap and CI
 - **GitHub:** [PR #1](https://github.com/Spsk1313/commercecore/pull/1), merged commit `ba058a1`; [passing CI run 40262686456](https://github.com/Spsk1313/commercecore/actions/runs/40262686456).
 - **User-observed local outputs:** `./mvnw test` ran one passing Spring Boot application-context test; `/actuator/health` returned HTTP 200 and `UP`.
@@ -63,9 +73,9 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 **Observed result:**
 PostgreSQL retained the test record after container replacement. This constitutes local infrastructure evidence (E2), not database integration in CI. [PR #2 backend CI run 40266833274](https://github.com/Spsk1313/commercecore/actions/runs/40266833274) passed without exercising PostgreSQL. Local experiment and setup were learner-executed following coaching; reviewer inspected outputs and the submitted Compose configuration.
 
-**Limitations:**
+**Limitations (as of 2026-10-26; superseded by the 2026-10-27 PR #4 entry above):**
 
-- Spring Boot is not yet connected to PostgreSQL.
+- Spring Boot was not yet connected to PostgreSQL.
 - No database integration tests or database CI checks exist yet.
 - Backup and disaster recovery have not been tested.
 - No production deployment has occurred.
