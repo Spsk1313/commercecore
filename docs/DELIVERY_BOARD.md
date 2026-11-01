@@ -1,14 +1,14 @@
 # Delivery board and change discipline
 
 **Snapshot:** 2026-11-01 (America/Toronto).
-**Status:** COM-002 in progress. PRs #1–#5 merged; backend and database integration verified. React/TypeScript frontend scaffold and CI verified on initial PR #6 commit, but PR #6 remains open. No commerce API, connected frontend workflow, deployment or real users.
+**Status:** COM-002 in progress. PRs #1–#5 merged; backend and database integration verified. React/TypeScript frontend scaffold, minimal CommerceCore shell, and CI verified through cleanup commit `d1ecd86`; PR #6 remains open. No commerce API, connected frontend workflow, deployment or real users.
 
 ## Most recent session handoff — 2026-11-01 (Toronto)
-- **Current branch/PR:** `feat/react-frontend-bootstrap` / [PR #6](https://github.com/Spsk1313/commercecore/pull/6); submitted head `a1c9097`, based on `main` `8a93c1a`. Documentation changes added later on the same branch; recheck CI at final head.
-- **Frontend implemented:** React 19 + TypeScript 6 + Vite 8, npm lockfile, development server, ESLint/build scripts and frontend pull-request workflow; still displays generated Vite starter UI.
-- **Verified:** Local `npm ci`, lint and build; [frontend Actions run](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) and [backend Actions run](https://github.com/Spsk1313/commercecore/actions/runs/41347826992) both passed on initial PR commit.
+- **Current branch/PR:** `feat/react-frontend-bootstrap` / [PR #6](https://github.com/Spsk1313/commercecore/pull/6); application cleanup commit `d1ecd86`, based on `main` `8a93c1a`. Documentation changes added later on the same branch; recheck CI at final head.
+- **Frontend implemented:** React 19 + TypeScript 6 + Vite 8, npm lockfile, development server, ESLint/build scripts and frontend pull-request workflow; displays a minimal CommerceCore heading and description after removal of generated Vite demonstration UI/assets.
+- **Verified:** Local `npm ci`, lint and build; [frontend Actions run](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend Actions run](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) both passed on application cleanup commit `d1ecd86`. Local lint/build also passed after cleanup.
 - **Open risk:** `npm audit` showed 12 moderate development-dependency findings involving `minimatch@10.2.6`; `npm audit --omit=dev` reported none. Resolution pending, not claimed secure by default.
-- **Next action:** Review docs and PR head checks, update the minimal CommerceCore application shell in a separate implementation change if warranted, then squash-merge frontend bootstrap. Next COM-002 gate is actual browser → API → PostgreSQL proof. No catalog/ProductCard functionality in this bootstrap PR.
+- **Next action:** Review updated documentation and final PR head checks, then squash-merge frontend bootstrap. Next COM-002 gate is actual browser → API → PostgreSQL proof. No catalog/ProductCard functionality in this bootstrap PR.
 - **Ownership:** Learner authored application scaffold and CI with coaching/review; mentor authored documentation updates. No complete commerce flow or real-user validation.
 
 ## Previous session handoff — 2026-10-27 (Toronto)
