@@ -25,6 +25,17 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 
 ## Verified implementation evidence
 
+### 2026-11-01 — COM-002 React frontend scaffold and pull-request CI
+
+- **Change under review:** [PR #6](https://github.com/Spsk1313/commercecore/pull/6), feature branch `feat/react-frontend-bootstrap`, initial submitted commit `a1c9097`. Added React 19 + TypeScript + Vite 8 scaffold, npm lockfile, ESLint and a separate GitHub Actions frontend workflow. **PR is open; these changes are not yet merged into `main`.**
+- **Learner-verified local:** Ubuntu, Node 22.23.2, npm 10.9.8. `npm ci` installed 162 packages; `npm run lint` passed; `npm run build` passed (Vite 8.3.5, 20 modules transformed). Learner previously confirmed local Vite dev server and counter interaction/HMR.
+- **Independent PR checks:** [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) job `verify` passed checkout, setup-node 22, `npm ci`, lint and build. [Backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826992) job `test` also passed on initial PR head `a1c9097`. These results are for that commit; later documentation commits require rechecking PR status.
+- **Known security finding:** Local `npm audit` returned **12 moderate findings** traced to `minimatch@10.2.6` through ESLint/TypeScript-ESLint development dependencies; `npm audit --omit=dev` returned **zero reported findings**. No forced remediation. Full audit remains non-clean; revisit a compatible fix.
+- **Evidence level:** E3 for frontend scaffold lint/build reproducibility on the tested PR commit, **not** for functional product behavior, frontend tests, deployed application or browser-to-database integration. Learner built and configured frontend/CI with mentor review; mentor authored documentation.
+- **Outstanding:** Replace starter UI with a minimal CommerceCore shell in a focused follow-up, complete PR review/merge, implement API integration and later merchant/catalog UI. No real users or production deployment.
+
+
+
 ### 2026-10-27 — COM-002 JDBC, Flyway V1 and PostgreSQL CI integration
 
 - **Changes:** [PR #4](https://github.com/Spsk1313/commercecore/pull/4), merged into `main` as `6e3d326`. Adds Spring Boot JDBC/PostgreSQL/Flyway, datasource password placeholder, `V1__create_merchants.sql`, and Testcontainers-backed `MerchantSchemaIntegrationTest`.
