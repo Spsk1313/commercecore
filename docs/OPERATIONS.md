@@ -1,11 +1,11 @@
 # Operations and reproducibility runbook
 
-**Status (2026-11-01):** Local Spring Boot ↔ PostgreSQL/Flyway and Testcontainers tests verified. React/TypeScript frontend bootstrap and independent frontend/backend CI verified on initial [PR #6](https://github.com/Spsk1313/commercecore/pull/6) commit; PR open. No deployed service, commerce API or production availability.
+**Status (2026-11-01):** Local Spring Boot ↔ PostgreSQL/Flyway and Testcontainers tests verified. React/TypeScript frontend bootstrap and minimal CommerceCore shell verified; independent frontend/backend CI passed after cleanup commit `d1ecd86` on [PR #6](https://github.com/Spsk1313/commercecore/pull/6), which remains open. No deployed service, commerce API or production availability.
 
 ## Environments
 - **Local:** Java 21 / Spring Boot 4.1.2; PostgreSQL 17 via Docker Compose with loopback host port `127.0.0.1:5433`, database and user `commercecore`, named persistent volume.
 - **Automated tests:** PostgreSQL 17 in disposable Testcontainers instances; Docker required. Spring Boot `@ServiceConnection` configures the test datasource independently of the local `.env`.
-- **CI:** `.github/workflows/backend-ci.yml` runs Maven tests on Java 21 ([PR #6 run](https://github.com/Spsk1313/commercecore/actions/runs/41347826992) passed); `.github/workflows/frontend-ci.yml` runs `npm ci`, lint and build with Node.js 22 ([PR #6 run](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) passed).
+- **CI:** `.github/workflows/backend-ci.yml` runs Maven tests on Java 21 ([PR #6 run](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passed); `.github/workflows/frontend-ci.yml` runs `npm ci`, lint and build with Node.js 22 ([PR #6 run](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) passed).
 - **Production/deployment:** Not implemented. HTTPS, secrets strategy, backup/recovery and secure authorization are open work.
 
 ## Local first-time setup and application startup
@@ -68,7 +68,7 @@ npm run dev
 # Separate terminal in frontend/: npm run lint && npm run build
 ```
 
-The Vite development server prints its URL (previously localhost:5173). No backend connection is implemented; the Vite starter is only a tooling smoke check. `npm ci` depends on the committed lockfile. `dist/` and `node_modules/` are ignored. npm audit recorded 12 moderate development dependency findings involving `minimatch@10.2.6` and zero findings with `--omit=dev`; the full-audit risk remains open. See [frontend README](../frontend/README.md).
+The Vite development server prints its URL (previously localhost:5173). No backend connection is implemented; the minimal CommerceCore shell is only a tooling smoke check. `npm ci` depends on the committed lockfile. `dist/` and `node_modules/` are ignored. npm audit recorded 12 moderate development dependency findings involving `minimatch@10.2.6` and zero findings with `--omit=dev`; the full-audit risk remains open. See [frontend README](../frontend/README.md).
 
 ## Limitations and future operational work
 - Local Spring Boot startup and health are verified; no publicly deployed service, HTTP business API or browser-to-database flow exists.
