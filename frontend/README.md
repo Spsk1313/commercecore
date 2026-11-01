@@ -2,7 +2,7 @@
 
 React 19 + TypeScript + Vite 8 frontend workspace for the CommerceCore multi-merchant commerce project.
 
-**Status (2026-11-01):** Frontend tooling and CI verified on [PR #6](https://github.com/Spsk1313/commercecore/pull/6). The application still displays the generated Vite starter screen. There are no commerce product pages, routes, authenticated flows, API integration, or production deployment yet.
+**Status (2026-11-01):** Frontend tooling and CI verified on [PR #6](https://github.com/Spsk1313/commercecore/pull/6). The application now displays a minimal CommerceCore heading and description; the Vite starter UI/assets were removed in commit `d1ecd86`. There are no commerce product pages, routes, authenticated flows, API integration, or production deployment yet.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ There is currently **no frontend unit-test or browser end-to-end test suite**. A
 
 ## Continuous integration
 
-[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [Initial frontend CI run on PR #6](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) passed on 2026-11-01.
+[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [Frontend CI for the application-shell cleanup](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) passed on 2026-11-01 at commit `d1ecd86`.
 
 Backend CI runs separately. See the [root README](../README.md) and [engineering evidence ledger](../docs/EVIDENCE_LEDGER.md).
 
