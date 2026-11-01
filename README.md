@@ -27,7 +27,7 @@ Once a Git repository exists, these files inside the repo are authoritative for 
 
 ## Frontend bootstrap (PR #6, not yet merged)
 
-Frontend sources reside in `frontend/`. See the [frontend runbook](frontend/README.md) for Node.js 22 prerequisites and `npm ci`, `npm run dev`, `npm run lint` and `npm run build` commands. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826992) passed on PR #6's initial commit. The UI currently displays Vite starter content and is not connected to the backend. The full npm development-dependency audit has an outstanding moderate-severity finding; details are in the evidence ledger.
+Frontend sources reside in `frontend/`. See the [frontend runbook](frontend/README.md) for Node.js 22 prerequisites and `npm ci`, `npm run dev`, `npm run lint` and `npm run build` commands. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passed after the application-shell cleanup on commit `d1ecd86`. The UI now displays a minimal CommerceCore shell (cleanup commit `d1ecd86`), but is not connected to the backend. The full npm development-dependency audit has an outstanding moderate-severity finding; details are in the evidence ledger.
 
 ## Verified local setup
 
