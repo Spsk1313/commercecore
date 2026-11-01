@@ -1,75 +1,55 @@
-# React + TypeScript + Vite
+# CommerceCore — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 + TypeScript + Vite 8 frontend workspace for the CommerceCore multi-merchant commerce project.
 
-Currently, two official plugins are available:
+**Status (2026-11-01):** Frontend tooling and CI verified on [PR #6](https://github.com/Spsk1313/commercecore/pull/6). The application still displays the generated Vite starter screen. There are no commerce product pages, routes, authenticated flows, API integration, or production deployment yet.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Prerequisites
 
-## React Compiler
+- Node.js 22 (verified locally with v22.23.2 and in GitHub Actions)
+- npm (verified locally with 10.9.8)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Install and run
 
-## Expanding the ESLint configuration
+From the repository root:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+cd frontend
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Vite prints the local development URL (previously observed at `http://localhost:5173/`). The development server supports hot module replacement: changes to frontend source generally appear without a manual rebuild.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Verify
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+From `frontend/`:
 
+```bash
+npm run lint
+npm run build
 ```
+
+- `npm ci` uses the committed `package-lock.json` and does a clean dependency installation.
+- `npm run lint` runs ESLint.
+- `npm run build` checks TypeScript using `tsc -b` and creates a Vite production bundle in `dist/`.
+- `npm run preview` can serve a previously built bundle for local inspection; it is not a production deployment.
+
+There is currently **no frontend unit-test or browser end-to-end test suite**. A passing build/lint workflow verifies the configured checks, not application correctness.
+
+## Continuous integration
+
+[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [Initial frontend CI run on PR #6](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) passed on 2026-11-01.
+
+Backend CI runs separately. See the [root README](../README.md) and [engineering evidence ledger](../docs/EVIDENCE_LEDGER.md).
+
+## Known limitations and security follow-up
+
+- This is a **development scaffold**, not an implemented merchant dashboard or storefront.
+- As observed locally on 2026-11-01, `npm audit` reported 12 moderate findings associated with `minimatch@10.2.6` through development tooling (ESLint and TypeScript-ESLint). `npm audit --omit=dev` reported zero vulnerabilities. The full audit is **not** clean, and this is not a blanket security assurance.
+- No forced dependency downgrade/major-version override was applied. Re-evaluate compatible fixes and re-run the full audit on a later dependency-maintenance checkpoint.
+- No browser-to-API-to-PostgreSQL integration, merchant authentication, authorization, or product workflows are implemented.
+
+## Next engineering milestone
+
+Finish and review the bootstrap PR; then implement a narrow browser → Spring Boot API → PostgreSQL flow under COM-002. Merchant product/catalog UI belongs in a subsequent feature branch, not the infrastructure bootstrap.
