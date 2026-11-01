@@ -1,9 +1,17 @@
 # Delivery board and change discipline
 
-**Snapshot:** 2026-10-27 (America/Toronto).
-**Status:** COM-002 in progress. PRs #1–#4 merged; backend, Docker Compose PostgreSQL, Flyway V1 and database integration CI verified. No commerce API, frontend, deployment or real users.
+**Snapshot:** 2026-11-01 (America/Toronto).
+**Status:** COM-002 in progress. PRs #1–#5 merged; backend and database integration verified. React/TypeScript frontend scaffold and CI verified on initial PR #6 commit, but PR #6 remains open. No commerce API, connected frontend workflow, deployment or real users.
 
-## Most recent session handoff — 2026-10-27 (Toronto)
+## Most recent session handoff — 2026-11-01 (Toronto)
+- **Current branch/PR:** `feat/react-frontend-bootstrap` / [PR #6](https://github.com/Spsk1313/commercecore/pull/6); submitted head `a1c9097`, based on `main` `8a93c1a`. Documentation changes added later on the same branch; recheck CI at final head.
+- **Frontend implemented:** React 19 + TypeScript 6 + Vite 8, npm lockfile, development server, ESLint/build scripts and frontend pull-request workflow; still displays generated Vite starter UI.
+- **Verified:** Local `npm ci`, lint and build; [frontend Actions run](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) and [backend Actions run](https://github.com/Spsk1313/commercecore/actions/runs/41347826992) both passed on initial PR commit.
+- **Open risk:** `npm audit` showed 12 moderate development-dependency findings involving `minimatch@10.2.6`; `npm audit --omit=dev` reported none. Resolution pending, not claimed secure by default.
+- **Next action:** Review docs and PR head checks, update the minimal CommerceCore application shell in a separate implementation change if warranted, then squash-merge frontend bootstrap. Next COM-002 gate is actual browser → API → PostgreSQL proof. No catalog/ProductCard functionality in this bootstrap PR.
+- **Ownership:** Learner authored application scaffold and CI with coaching/review; mentor authored documentation updates. No complete commerce flow or real-user validation.
+
+## Previous session handoff — 2026-10-27 (Toronto)
 - **Repository:** `main` and `origin/main` synchronized at `6e3d326`; learner showed a clean worktree and only local/remote `main` branches after squash-merging PR #4.
 - **Implemented:** Spring Boot 4.1.2 / Java 21 backend, PostgreSQL 17 local Docker Compose volume, JDBC datasource with secret via environment variable, Flyway `V1__create_merchants.sql`, and `MerchantSchemaIntegrationTest` with PostgreSQL Testcontainers. Merchant table currently models only generated ID and display name, not tenant access controls.
 - **Verified:** Spring started locally, initialized Hikari connection pool, executed Flyway V1 and wrote successful migration history; learner inspected the table constraints and history via `psql`. Manually verified valid and rejected names. Local `env -u COMMERCECORE_DB_PASSWORD ./mvnw test`: **11 test executions passed** (one schema check, five negative, five positive). [PR #4 GitHub CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) passed on a separate runner. See [evidence ledger](EVIDENCE_LEDGER.md).
@@ -16,7 +24,7 @@
 | ID      | Capability                                                          | Status      | Owner   | Proof / link                                                 | Next gate                                                                  |
 | ------- | ------------------------------------------------------------------- | ----------- | ------- | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
 | COM-001 | Feature specification, tenant model, API and concurrency invariants | In Progress | Learner | None                                                         | Design review + ADR                                                        |
-| COM-002 | Local full-stack baseline: React, Spring, PostgreSQL, Flyway, CI    | In Progress | Learner | PRs [#1](https://github.com/Spsk1313/commercecore/pull/1), [#2](https://github.com/Spsk1313/commercecore/pull/2), [#4](https://github.com/Spsk1313/commercecore/pull/4); [passing database CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) | React/TypeScript bootstrap, then browser → API → DB verification |
+| COM-002 | Local full-stack baseline: React, Spring, PostgreSQL, Flyway, CI    | In Progress | Learner | [PR #6](https://github.com/Spsk1313/commercecore/pull/6), [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826942); PRs [#1](https://github.com/Spsk1313/commercecore/pull/1), [#2](https://github.com/Spsk1313/commercecore/pull/2), [#4](https://github.com/Spsk1313/commercecore/pull/4); [passing database CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) | PR #6 review/merge, then browser → API → DB verification |
 | COM-003 | Merchant auth/store isolation                                       | Planned     | Learner | None                                                         | Negative cross-tenant tests                                                |
 | COM-004 | Merchant catalog and inventory                                      | Planned     | Learner | None                                                         | API/UI contract + DB constraints                                           |
 | COM-005 | Public storefront and cart                                          | Planned     | Learner | None                                                         | End-to-end browser flow                                                    |
