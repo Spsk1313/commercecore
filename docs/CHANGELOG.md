@@ -1,5 +1,11 @@
 # Changelog — verified engineering changes
 
+## 2026-11-01 — COM-002 frontend bootstrap (PR open)
+- [PR #6](https://github.com/Spsk1313/commercecore/pull/6) adds React/TypeScript/Vite scaffold, lockfile, lint/build scripts and frontend GitHub Actions CI.
+- Initial commit `a1c9097` passed independent [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826942) (`npm ci`, ESLint, TypeScript/Vite build) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41347826992); local clean install, lint and build also passed.
+- Documented local development instructions and the open npm development-tooling advisory: 12 moderate full-audit findings, zero findings from `npm audit --omit=dev` at the recorded checkpoint.
+- Learner replaced the Vite starter screen/assets with a minimal CommerceCore shell in commit `d1ecd86`; local lint/build passed, followed by [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passes. No commerce-facing features, API integration, frontend automated tests, deployment or users. **Not merged into main yet; recheck CI after documentation changes.**
+
 ## 2026-10-27 — COM-002 Flyway and PostgreSQL integration tests
 - [PR #4](https://github.com/Spsk1313/commercecore/pull/4) squash-merged as `6e3d326`; introduced Spring Boot JDBC/PostgreSQL/Flyway and V1 `merchants` schema with named merchant-name checks.
 - Added Testcontainers PostgreSQL integration tests: table-existence verification, five invalid merchant names rejected, five valid names persisted/read in rolled-back transactions.

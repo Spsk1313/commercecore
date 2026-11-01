@@ -1,6 +1,6 @@
 # CommerceCore — Engineering Project
 
-**Status:** Java 21/Spring Boot backend, local PostgreSQL, Flyway V1 merchant schema and PostgreSQL integration tests verified in GitHub CI as of 2026-10-27. No merchant business API, frontend or deployment verified.
+**Status (2026-11-01):** Java 21/Spring Boot and PostgreSQL/Flyway integration verified. React + TypeScript frontend scaffold and frontend CI passed on [PR #6](https://github.com/Spsk1313/commercecore/pull/6) (still under review). No merchant business API, browser-to-database commerce flow or production deployment verified.
 **Owner:** Learner (sole accountable implementing engineer).
 **Coach:** Technical lead/reviewer; not substitute implementation author.
 **Target:** A production-minded, independently built, Shopify-inspired commerce vertical slice by **2026-11-30** (scope gates, not a promise of Shopify feature parity).
@@ -24,6 +24,10 @@ Merchant creates a store and product; customer browses, submits pay-on-pickup/si
 
 ## Source of truth
 Once a Git repository exists, these files inside the repo are authoritative for product facts. The coach may keep a **brief mirrored checkpoint** in Software Prep records; it must link to/quote the actual commit and cannot claim to have reviewed local files or CI unless artifacts/logs were supplied or read from connected GitHub. Do not duplicate maintenance for no reason.
+
+## Frontend bootstrap (PR #6, not yet merged)
+
+Frontend sources reside in `frontend/`. See the [frontend runbook](frontend/README.md) for Node.js 22 prerequisites and `npm ci`, `npm run dev`, `npm run lint` and `npm run build` commands. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passed after the application-shell cleanup on commit `d1ecd86`. The UI now displays a minimal CommerceCore shell (cleanup commit `d1ecd86`), but is not connected to the backend. The full npm development-dependency audit has an outstanding moderate-severity finding; details are in the evidence ledger.
 
 ## Verified local setup
 
@@ -66,7 +70,7 @@ To shut down local PostgreSQL without deleting persistent data, run `docker comp
 - [PR #2](https://github.com/Spsk1313/commercecore/pull/2) — PostgreSQL Compose and persistence verification, merged `0ec4cfc`.
 - [PR #3](https://github.com/Spsk1313/commercecore/pull/3) — documentation and session handoff, merged `7088b72`.
 - [PR #4](https://github.com/Spsk1313/commercecore/pull/4) — JDBC/Flyway V1 and Testcontainers integration, merged `6e3d326`; passing [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894).
-- **Next COM-002 implementation:** establish React + TypeScript frontend baseline, then verify a browser-to-API-to-PostgreSQL vertical slice. Merchant authentication and business APIs are not yet implemented.
+- **Current COM-002 review:** [PR #6](https://github.com/Spsk1313/commercecore/pull/6) for frontend bootstrap/CI; next verify a browser-to-API-to-PostgreSQL vertical slice after its review and merge. Merchant authentication and business APIs are not yet implemented.
 - See [delivery board](docs/DELIVERY_BOARD.md), [evidence ledger](docs/EVIDENCE_LEDGER.md), and [operations runbook](docs/OPERATIONS.md).
 
 ## Product naming
