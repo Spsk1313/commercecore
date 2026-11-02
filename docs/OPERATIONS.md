@@ -1,6 +1,6 @@
 # Operations and reproducibility runbook
 
-**Status (2026-11-01):** [PR #6](https://github.com/Spsk1313/commercecore/pull/6) merged; [PR #7](https://github.com/Spsk1313/commercecore/pull/7) adds a locally verified React → Spring Boot → PostgreSQL merchant-read flow. Initial PR #7 backend/frontend CI passed. No production deployment, secure merchant workflow or tenant authorization.
+**Status (2026-11-01):** [PR #6](https://github.com/Spsk1313/commercecore/pull/6) merged; [PR #7](https://github.com/Spsk1313/commercecore/pull/7) adds a locally verified React → Spring Boot → PostgreSQL merchant-read flow. Initial PR #7 backend/frontend CI passed. No production deployment, secure merchant workflow or tenant authorization. Post-documentation [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) passed at audit head `cd9e723`; verify the latest commit before merge.
 
 ## Environments
 - **Local:** Java 21 / Spring Boot 4.1.2; PostgreSQL 17 via Docker Compose with loopback host port `127.0.0.1:5433`, database and user `commercecore`, named persistent volume.
