@@ -1,6 +1,6 @@
 # CommerceCore — Engineering Project
 
-**Status (2026-11-01):** Java 21/Spring Boot and PostgreSQL/Flyway integration verified. React + TypeScript frontend scaffold and frontend CI passed on [PR #6](https://github.com/Spsk1313/commercecore/pull/6) (still under review). No merchant business API, browser-to-database commerce flow or production deployment verified.
+**Status (2026-11-01):** React/TypeScript/Vite bootstrap [PR #6](https://github.com/Spsk1313/commercecore/pull/6) is merged. Local merchant-read React → Spring Boot → PostgreSQL integration and targeted tests are verified on open [PR #7](https://github.com/Spsk1313/commercecore/pull/7), with both initial CI workflows passed. No authenticated merchant workflow, tenant security, production deployment or verified real-user value.
 **Owner:** Learner (sole accountable implementing engineer).
 **Coach:** Technical lead/reviewer; not substitute implementation author.
 **Target:** A production-minded, independently built, Shopify-inspired commerce vertical slice by **2026-11-30** (scope gates, not a promise of Shopify feature parity).
@@ -25,9 +25,9 @@ Merchant creates a store and product; customer browses, submits pay-on-pickup/si
 ## Source of truth
 Once a Git repository exists, these files inside the repo are authoritative for product facts. The coach may keep a **brief mirrored checkpoint** in Software Prep records; it must link to/quote the actual commit and cannot claim to have reviewed local files or CI unless artifacts/logs were supplied or read from connected GitHub. Do not duplicate maintenance for no reason.
 
-## Frontend bootstrap (PR #6, not yet merged)
+## Frontend bootstrap (PR #6 merged) and local read path (PR #7 open)
 
-Frontend sources reside in `frontend/`. See the [frontend runbook](frontend/README.md) for Node.js 22 prerequisites and `npm ci`, `npm run dev`, `npm run lint` and `npm run build` commands. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passed after the application-shell cleanup on commit `d1ecd86`. The UI now displays a minimal CommerceCore shell (cleanup commit `d1ecd86`), but is not connected to the backend. The full npm development-dependency audit has an outstanding moderate-severity finding; details are in the evidence ledger.
+Frontend sources reside in `frontend/`. See the [frontend runbook](frontend/README.md) for Node.js 22 prerequisites and `npm ci`, `npm run dev`, `npm run lint` and `npm run build` commands. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passed after the application-shell cleanup on commit `d1ecd86`. PR #6 squash-merged as `aaed304`. PR #7 now connects a temporary merchant-ID search UI to the backend using a local Vite `/api` proxy, with input validation, loading and error states; it is an integration harness, not a storefront or secure merchant feature. The full npm development-dependency audit has an outstanding moderate-severity finding; details are in the evidence ledger.
 
 ## Verified local setup
 
@@ -61,7 +61,7 @@ cd backend
 env -u COMMERCECORE_DB_PASSWORD ./mvnw test
 ```
 
-The JUnit integration test starts a disposable PostgreSQL 17 Testcontainers instance through `@ServiceConnection`, runs Flyway V1, and checks merchant-table behavior. Eleven test executions passed locally, and [GitHub Actions run #5](https://github.com/Spsk1313/commercecore/actions/runs/40616327894) passed independently on PR #4. Tests do not require a pre-existing Compose database.
+The JUnit integration test starts a disposable PostgreSQL 17 Testcontainers instance through `@ServiceConnection`, runs Flyway V1, and checks merchant-table behavior. The updated suite reported **18 tests passed locally**, and [PR #7 backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979195) passed on the initial feature head. Tests do not require a pre-existing Compose database.
 
 To shut down local PostgreSQL without deleting persistent data, run `docker compose down` from repository root. **Do not use `docker compose down -v` during ordinary shutdown.**
 
@@ -70,7 +70,8 @@ To shut down local PostgreSQL without deleting persistent data, run `docker comp
 - [PR #2](https://github.com/Spsk1313/commercecore/pull/2) — PostgreSQL Compose and persistence verification, merged `0ec4cfc`.
 - [PR #3](https://github.com/Spsk1313/commercecore/pull/3) — documentation and session handoff, merged `7088b72`.
 - [PR #4](https://github.com/Spsk1313/commercecore/pull/4) — JDBC/Flyway V1 and Testcontainers integration, merged `6e3d326`; passing [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894).
-- **Current COM-002 review:** [PR #6](https://github.com/Spsk1313/commercecore/pull/6) for frontend bootstrap/CI; next verify a browser-to-API-to-PostgreSQL vertical slice after its review and merge. Merchant authentication and business APIs are not yet implemented.
+- [PR #6](https://github.com/Spsk1313/commercecore/pull/6) — frontend bootstrap/CI, squash-merged `aaed304`.
+- **Current COM-002 review:** [PR #7](https://github.com/Spsk1313/commercecore/pull/7), temporary local merchant-read full-stack integration; [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) passed at audited documentation head `cd9e723`. Confirm the latest commit's checks, squash-merge, and start COM-003 merchant onboarding and tenant isolation.
 - See [delivery board](docs/DELIVERY_BOARD.md), [evidence ledger](docs/EVIDENCE_LEDGER.md), and [operations runbook](docs/OPERATIONS.md).
 
 ## Product naming

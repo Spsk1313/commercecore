@@ -1,6 +1,6 @@
 # Product specification — CommerceCore
 
-**Status:** Product mission and authenticated-checkout policy approved by implementing engineer on 2026-10-25; detailed V1 feature scope and contracts remain under review. **Last reviewed:** 2026-10-25.
+**Status:** Product mission and authenticated-checkout policy approved by implementing engineer on 2026-10-25; detailed V1 feature scope and contracts remain under review. **Implementation status checked:** 2026-11-01; product decisions last reviewed 2026-10-25.
 
 
 ## Approved product statement — 2026-10-25
@@ -12,6 +12,12 @@ Implementing engineer explicitly approved: e-commerce, multiple merchant tenants
 - Included: merchant account and isolated admin area; one storefront per merchant; product publication and inventory; public catalogue browsing; cart; simulated/pay-on-pickup checkout with trusted totals, last-unit safety, and idempotent retries; merchant order confirmation/fulfillment/cancellation; basic operational tests and reproducible deployment.
 - Deliberately not included initially: real payments, returns/refunds, taxes/shipping calculations, discounts, reviews, marketplace search, advanced analytics, Redis, message broker, AI, microservices. Those may be later increments after a working verified release.
 - **Approved in COM-001.3:** V1 checkout requires an authenticated customer account. Catalogue browsing remains public. Guest checkout and anonymous-cart merging are excluded from the initial release. Cart login timing is still to be specified; do not infer that all cart UI actions require login merely from the checkout decision.
+
+## COM-002 implementation checkpoint — PR #7
+
+[PR #6](https://github.com/Spsk1313/commercecore/pull/6) merged the frontend scaffold. [PR #7](https://github.com/Spsk1313/commercecore/pull/7) adds a **temporary local-only merchant lookup**: `GET /api/v1/merchants/{merchantId}` returns `id` and `name` on 200, 404 ProblemDetail for missing rows, and 400 for nonnumeric path values. A React form accesses it through Vite's local dev proxy. The path was exercised against local PostgreSQL, and initial PR #7 CI passed.
+
+**Product distinction:** This is a walking-skeleton integration check, not a merchant journey, secured store, or evidence of market demand. There is no merchant account, tenant isolation or public/private visibility model. Next actual product value: COM-003 merchant identity and secured store onboarding; then catalog workflows. Do not publish the current read endpoint until access policy and authorization are designed.
 
 ## Users and jobs
 - **Merchant/operator:** create an account/store, manage sellable items and finite inventory, review orders, fulfill or cancel orders.

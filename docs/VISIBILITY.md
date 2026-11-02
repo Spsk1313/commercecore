@@ -27,4 +27,4 @@ Pick a specific engineer or relevant community; ask one precise question about a
 - Testimonials/screenshots require consent; avoid posting vulnerabilities before they are mitigated.
 
 ## Publication log
-No posts, real-user feedback, outreach or reviews attributable to CommerceCore verified as of 2026-10-25.
+No posts, external users, interviews, public outreach outcomes, or consented feedback attributable to CommerceCore are verified as of the 2026-11-01 PR #7 review. The local merchant-ID read path ([PR #7](https://github.com/Spsk1313/commercecore/pull/7)) provides narrow engineering integration evidence, **not** customer value, production readiness or external validation. Seek genuine merchant problem discovery and a working onboarding/catalog journey before claiming usefulness.
