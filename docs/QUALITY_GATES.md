@@ -1,6 +1,6 @@
 # Quality gates and Definition of Done
 
-**Status:** Proposed quality policy, to be adopted by implementing engineer. No passes claimed at baseline.
+**Status (2026-11-01):** Quality policy remains the target for real product features. PR #7 has limited passing backend/frontend CI on its initial head and a manual local read-path demonstration; these **do not** satisfy production release gates. Recheck CI after docs changes.
 
 ## Feature Definition of Done
 A feature may be marked **Verified** only when:
@@ -21,6 +21,10 @@ A feature may be marked **Verified** only when:
 - Security: cross-tenant resource access, forged IDs, unauthenticated writes, input abuse and secret-handling.
 - Mutation/fault drill: purposely broken behavior and proof tests detect it; crashed worker/DB outage only when implemented and safe.
 - Verify CI on clean checkout; tests without run evidence are not marked passed.
+
+## Walking skeleton vs product feature
+
+The COM-002 merchant-ID read path may be reviewed as a narrow integration proof with documented local tests, targeted MVC/JDBC checks and passing CI. It is **not** secure merchant functionality or a production release. COM-003 onward needs authenticated ownership, private-resource authorization and negative cross-tenant tests. No need to expand the temporary ID search for its own sake. See [PR #7](https://github.com/Spsk1313/commercecore/pull/7) and [evidence](EVIDENCE_LEDGER.md).
 
 ## MVP release checklist
 - [ ] Product happy path demonstrated end-to-end.
