@@ -43,7 +43,7 @@ There is currently **no frontend unit-test or browser end-to-end test suite**. A
 
 ## Continuous integration
 
-[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [PR #7 frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) passed on the initial application commit `1d2396c`; recheck following docs commits.
+[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [PR #7 frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) passed at application head `1d2396c`; the [subsequent documentation-audit run](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) also passed at `cd9e723`. Confirm checks on any newer head.
 
 Backend CI runs separately. See the [root README](../README.md) and [engineering evidence ledger](../docs/EVIDENCE_LEDGER.md).
 
