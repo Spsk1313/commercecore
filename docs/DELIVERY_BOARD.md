@@ -42,7 +42,11 @@
 
 ## Accepted COM-001 decisions
 
-- 2026-10-25 — ADR-0002: cart does not reserve inventory; atomic allocation at successful order submission for V1; stale-cart checkout rejection is an expected, clearly recoverable UX case. Design decision only, no implementation verified.
+- [ADR-0001](DECISIONS/ADR-0001-modular-monolith.md): modular-monolith proposal still awaiting learner acceptance and boundary review.
+- [ADR-0002](DECISIONS/ADR-0002-inventory-at-checkout.md): cart does not reserve inventory; allocate on successful order submission. Accepted policy, no implementation.
+- [ADR-0003](DECISIONS/ADR-0003-inventory-accounting-cancellations.md): on-hand/allocated accounting and mutually exclusive cancellation/fulfillment. Accepted logical policy; no implementation.
+- [ADR-0004](DECISIONS/ADR-0004-tenant-ownership-cart-integrity.md): merchant tenant ownership and cart integrity. Accepted policy; no implementation.
+- [ADR-0005](DECISIONS/ADR-0005-authenticated-checkout.md): customer authentication before checkout, public browsing. Accepted policy; no implementation.
 
 ## Feature card template (copy under appropriate ID)
 
