@@ -71,7 +71,7 @@ To shut down local PostgreSQL without deleting persistent data, run `docker comp
 - [PR #3](https://github.com/Spsk1313/commercecore/pull/3) — documentation and session handoff, merged `7088b72`.
 - [PR #4](https://github.com/Spsk1313/commercecore/pull/4) — JDBC/Flyway V1 and Testcontainers integration, merged `6e3d326`; passing [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894).
 - [PR #6](https://github.com/Spsk1313/commercecore/pull/6) — frontend bootstrap/CI, squash-merged `aaed304`.
-- **Current COM-002 review:** [PR #7](https://github.com/Spsk1313/commercecore/pull/7), temporary local merchant-read full-stack integration; initial [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979195) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) passed. Recheck final commit CI and squash-merge; next COM-003 merchant onboarding and tenant isolation.
+- **Current COM-002 review:** [PR #7](https://github.com/Spsk1313/commercecore/pull/7), temporary local merchant-read full-stack integration; [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) passed at audited documentation head `cd9e723`. Confirm the latest commit's checks, squash-merge, and start COM-003 merchant onboarding and tenant isolation.
 - See [delivery board](docs/DELIVERY_BOARD.md), [evidence ledger](docs/EVIDENCE_LEDGER.md), and [operations runbook](docs/OPERATIONS.md).
 
 ## Product naming
