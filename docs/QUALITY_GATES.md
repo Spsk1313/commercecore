@@ -1,6 +1,6 @@
 # Quality gates and Definition of Done
 
-**Status (2026-11-01):** Quality policy remains the target for real product features. PR #7 has limited passing backend/frontend CI on its initial head and a manual local read-path demonstration; these **do not** satisfy production release gates. Recheck CI after docs changes.
+**Status (2026-11-01):** Quality policy remains the target for real product features. PR #7 has passing [backend](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) CI at documented audit head `cd9e723`, plus a manual local read-path demonstration; these **do not** satisfy production release gates. Verify checks again on any later head before merge.
 
 ## Feature Definition of Done
 A feature may be marked **Verified** only when:
