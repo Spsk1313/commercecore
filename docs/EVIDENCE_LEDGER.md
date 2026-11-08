@@ -25,14 +25,22 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 
 ## Verified implementation evidence
 
-### 2026-11-01 — COM-002 merchant read vertical slice (PR #7, open)
+### 2026-11-08 — COM-003 user/membership constraints (PR #8 open)
+
+- **Code/PR:** [PR #8](https://github.com/Spsk1313/commercecore/pull/8), initial application head `fafb3bf`; Flyway V2 adds users, functional unique index on `lower(email)`, and merchant memberships with OWNER/STAFF role constraint, non-null role, two foreign keys and unique (user_id, merchant_id).
+- **Learner-run verification:** Local `env -u COMMERCECORE_DB_PASSWORD ./mvnw test` on 2026-11-08 reported **24 executions, 0 failures/errors/skips** (18 existing, six new). New Testcontainers PostgreSQL tests reject case-insensitive duplicate email, duplicate user/merchant membership, unsupported role, null role, missing user FK and missing merchant FK. Spring test-managed transactions roll back fixture inserts. [Backend Actions run 42516694613](https://github.com/Spsk1313/commercecore/actions/runs/42516694613) succeeded on initial PR head; [frontend run 42516694574](https://github.com/Spsk1313/commercecore/actions/runs/42516694574) succeeded as unaffected regression check. Both must be rechecked after subsequent documentation commits.
+- **Learning attribution:** Learner designed and revised the SQL and wrote/refactored the six Java tests with mentor review and debugging guidance. Mentor maintains documentation. Independent delayed transfer assessment not yet performed.
+- **Scope/limitation:** E3 for narrowly verified migration and integrity checks upon successful PR CI; not authentication, safe password storage, case/whitespace canonicalization at registration, transactional merchant creation, tenant authorization, frontend product flow, deployment or real-user value. Negative tests assert `DataIntegrityViolationException`, not the precise PostgreSQL constraint identity. Tests using negative IDs rely on default positive generated identities; appropriate for this controlled test fixture.
+
+
+### 2026-11-01 — COM-002 merchant read vertical slice (PR #7, merged)
 
 - **Code/PR:** [PR #7](https://github.com/Spsk1313/commercecore/pull/7), application head `1d2396c`. Added a JDBC merchant repository, application service and not-found exception, MVC GET endpoint `/api/v1/merchants/{merchantId}`, 200 DTO, 404 ProblemDetail, and nonnumeric 400 handling. Frontend adds a Vite dev `/api` proxy, typed fetch client, temporary merchant-ID input with validation, loading and error states.
 - **Learner-reported execution:** `env -u COMMERCECORE_DB_PASSWORD ./mvnw test` — **18 tests executed, zero failures/errors/skips**: 11 schema, 2 JDBC repository, 2 service, 3 MVC. Frontend lint/build green. No automated React component/browser E2E tests.
 - **Manually observed:** Against running local Compose PostgreSQL, curl returned HTTP 404 ProblemDetail for ID 999, HTTP 400 for `abc`, and HTTP 200 `{"id":5,"name":"John & Sons"}` after inserting a temporary merchant. Test merchant deleted afterward; database confirmed empty. Vite-proxied curl on port 5173 returned the same 404 ProblemDetail. Learner reported successful browser search, missing-record display and throttled loading indicator.
 - **Independent CI:** [Backend Actions run 41375979195](https://github.com/Spsk1313/commercecore/actions/runs/41375979195) and [Frontend Actions run 41375979226](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) both succeeded at initial application head `1d2396c`. **Subsequent documentation-audit head `cd9e723` passed both [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817).** Confirm checks on any newer commit before merge.
 - **Confidence/scope:** E3 for a narrow *locally integrated read path* with separately verified CI checks. Does **not** prove an automated full-stack E2E test, secure merchant authorization, production operation, catalog/checkout functionality, performance, external use or product value. Unauthenticated merchant-read endpoint must stay local-only until an explicit privacy/publication and authorization policy is implemented. The ID-search screen is an integration harness.
-- **Ownership:** Learner wrote application code and ran tests/manual verification with coaching; mentor authored documentation/review. No real-user feedback or deployed release verified.
+- **Ownership:** Learner wrote application code and ran tests/manual verification with coaching; mentor authored documentation/review. No real-user feedback or deployed release verified. **PR #7 later squash-merged as `a42d639` into `main`, closing COM-002 local integration milestone as Verified.**
 
 ### 2026-11-01 — COM-002 React frontend scaffold and pull-request CI
 
