@@ -1,10 +1,16 @@
 # Changelog — verified engineering changes
 
-## 2026-11-01 — COM-002 merchant read integration (PR #7 open)
+## 2026-11-08 — COM-003 identity and membership schema (PR #8 open)
+- [PR #8](https://github.com/Spsk1313/commercecore/pull/8) adds Flyway V2 users and merchant memberships with case-insensitive unique email index, required OWNER/STAFF role, foreign keys and per-user/per-merchant uniqueness. Existing V1 merchant schema remains untouched.
+- Six new PostgreSQL Testcontainers negative-invariant tests were authored by the learner. Local Maven suite reported **24 tests, 0 failures/errors/skips** on 2026-11-08. [Backend CI](https://github.com/Spsk1313/commercecore/actions/runs/42516694613) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/42516694574) passed on initial PR head `fafb3bf`. Check CI again for later documentation commits.
+- **Not yet implemented:** registration endpoint, validation, password hashing, login/session authentication, onboarding transaction or merchant authorization. PR remains under review until merged.
+
+
+## 2026-11-01 — COM-002 merchant read integration (PR #7 merged)
 - [PR #7](https://github.com/Spsk1313/commercecore/pull/7) adds JDBC merchant lookup, application service, 200 response DTO, 404 ProblemDetail and numeric path binding (400 on invalid values).
 - Added 2 PostgreSQL-backed repository tests, 2 Mockito service tests and 3 MVC tests. **18 backend test executions passed locally**; [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979195) passed on the initial application head.
 - Added local Vite `/api` proxy, TypeScript API client and temporary React ID search with validation, loading and error states. Manual browser-to-API-to-PostgreSQL smoke check succeeded. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) passed on the initial head.
-- **Not a production feature:** Endpoint is unauthenticated; no tenant isolation, automated browser E2E, store onboarding, deployed app or real-user benefit. PR review and final-head CI still required before merge.
+- **Not a production feature:** Endpoint is unauthenticated; no tenant isolation, automated browser E2E, store onboarding, deployed app or real-user benefit. **PR #7 subsequently squash-merged into `main` as `a42d639`.** COM-002 is Verified as a local integration baseline, not Released.
 
 ## 2026-11-01 — COM-002 frontend bootstrap (PR #6 merged)
 - [PR #6](https://github.com/Spsk1313/commercecore/pull/6) adds React/TypeScript/Vite scaffold, lockfile, lint/build scripts and frontend GitHub Actions CI.
