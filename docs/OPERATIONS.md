@@ -1,7 +1,7 @@
 # Operations and reproducibility runbook
 
 
-**Status (2026-11-09):** COM-002 local merchant read (PR #7) and COM-003 V2 users/memberships (PR #8, merged `fe7ae39`) are on `main`. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **open** for V3 verification data and transactional service logic. 32 learner-run backend tests passed; backend/frontend CI passed at PR #9's initial application head `6e7be22`. Final-head CI must be rechecked after documentation updates. No public deployment, registration/login, email delivery, HTTPS app, secure merchant authorization or real-user traffic.
+**Status (2026-11-09):** COM-002 local merchant read (PR #7) and COM-003 V2 users/memberships (PR #8, merged `fe7ae39`) are on `main`. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **merged** as `9d192d0` for V3 verification data and transactional service logic. 32 learner-run backend tests passed; backend/frontend CI passed at PR #9's final head `598ebf3` before squash merge. No public deployment, registration/login, email delivery, HTTPS app, secure merchant authorization or real-user traffic.
 
 ## Environments
 - **Local:** Java 21 / Spring Boot 4.1.2; PostgreSQL 17 via Docker Compose with loopback host port `127.0.0.1:5433`, database and user `commercecore`, named persistent volume.
@@ -55,7 +55,7 @@ env -u COMMERCECORE_DB_PASSWORD ./mvnw test
 ```
 
 
-The backend suite uses `@ServiceConnection` PostgreSQL Testcontainers and does not need a Compose database or local `.env`. It now covers V1 merchant checks, V2 user/membership integrity, merchant-read MVC/JDBC, token generator/hash, sequential token consumption and expired-token rejection, and successful/rollback email verification service transactions. **2026-11-09 local run: 32 tests, zero failures/errors/skips.** Learner also intentionally removed `@Transactional` from the service and observed rollback-test failure, then restored it and observed success. Initial PR #9 backend/frontend CI passed on `6e7be22`, but recheck after documentation commits. Tests do not exercise a live mail provider, concurrent verification claims, or production session/security policy.
+The backend suite uses `@ServiceConnection` PostgreSQL Testcontainers and does not need a Compose database or local `.env`. It now covers V1 merchant checks, V2 user/membership integrity, merchant-read MVC/JDBC, token generator/hash, sequential token consumption and expired-token rejection, and successful/rollback email verification service transactions. **2026-11-09 local run: 32 tests, zero failures/errors/skips.** Learner also intentionally removed `@Transactional` from the service and observed rollback-test failure, then restored it and observed success. PR #9 final-head backend/frontend CI passed on `598ebf3` before squash merge. Tests do not exercise a live mail provider, concurrent verification claims, or production session/security policy.
 
 Use `docker compose down` (from the repository root) to remove local containers while keeping the named data volume. **Never use `docker compose down -v` for routine shutdown**: it removes the named volume. Changing `.env` later does not rotate credentials already initialized within an existing PostgreSQL data volume.
 

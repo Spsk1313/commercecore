@@ -30,6 +30,6 @@ Pick a specific engineer or relevant community; ask one precise question about a
 
 **As of 2026-11-09:** No CommerceCore-specific public case study, independently verified external review, pilot merchant/user, customer outcome or consented testimonial has been recorded. PR #7 proves only local full-stack merchant read, PR #8 proves selected persistence constraints, and [PR #9](https://github.com/Spsk1313/commercecore/pull/9) adds a locally tested transactional email-verification foundation with 32 passing backend tests. None proves a production identity flow or market value.
 
-**Candidate engineering write-up after PR #9 merge:** Show why consuming a token and marking a user verified must share a transaction, including the deliberate `@Transactional` removal/failure experiment and PostgreSQL rollback check. Label it *development/test evidence*, not user adoption or security certification.
+**Candidate engineering write-up (PR #9 merged):** Show why consuming a token and marking a user verified must share a transaction, including the deliberate `@Transactional` removal/failure experiment and PostgreSQL rollback check. Label it *development/test evidence*, not user adoption or security certification.
 
 **Next external-value milestone:** Interview real prospective merchants about pain points, obtain publication consent for any feedback, and deliver a protected onboarding/catalog journey before claiming impact.

@@ -1,7 +1,7 @@
 # CommerceCore — Engineering Project
 
 
-**Status (2026-11-09):** COM-002 local React → API → PostgreSQL read-path baseline is **Verified** after [PR #7](https://github.com/Spsk1313/commercecore/pull/7) merged. COM-003 Flyway V2 accounts and memberships merged in [PR #8](https://github.com/Spsk1313/commercecore/pull/8) as `fe7ae39`. **[PR #9](https://github.com/Spsk1313/commercecore/pull/9) remains open** with Flyway V3 email-verification schema and transactional verification logic. Learner-run backend suite: **32 tests passed**; initial PR #9 backend and frontend CI passed at `6e7be22`. There is **no** registration/login API, password hashing implementation, verification email delivery/HTTP endpoint, tenant authorization, production deployment or verified real-user value.
+**Status (2026-11-09):** COM-002 local React → API → PostgreSQL read-path baseline is **Verified** after [PR #7](https://github.com/Spsk1313/commercecore/pull/7) merged. COM-003 Flyway V2 accounts and memberships merged in [PR #8](https://github.com/Spsk1313/commercecore/pull/8) as `fe7ae39`. **[PR #9](https://github.com/Spsk1313/commercecore/pull/9) squash-merged as `9d192d0`** with Flyway V3 email-verification schema and transactional verification logic. Learner-run backend suite: **32 tests passed**; latest PR #9 backend/frontend CI passed at `598ebf3`. There is **no** registration/login API, password hashing implementation, verification email delivery/HTTP endpoint, tenant authorization, production deployment or verified real-user value.
 
 **Owner:** Learner (sole accountable implementing engineer).
 **Coach:** Technical lead/reviewer; not substitute implementation author.
@@ -32,10 +32,10 @@ Once a Git repository exists, these files inside the repo are authoritative for 
 ## Current verified engineering baseline
 
 - **Frontend:** React 19, TypeScript and Vite 8; PR #7 merged a temporary merchant-ID search with input validation, loading/errors and a local development `/api` proxy. This is a walking-skeleton integration harness, not a storefront or secure merchant dashboard. See [frontend README](frontend/README.md).
-- **Backend:** Java 21, Spring Boot 4.1.2, Spring MVC, `JdbcClient`, PostgreSQL 17, Flyway and Testcontainers. V1: merchants; V2 (merged): users and merchant memberships; V3 (open PR #9): verified-at timestamp and email-verification token records. JPA/Hibernate is **not installed**.
-- **Verification foundation under review:** 32 cryptographically random bytes encoded as URL-safe unpadded Base64; SHA-256 of the raw token string stored as a hexadecimal hash (raw token not persisted); repository consumption guarded by expiration/consumed checks; `@Transactional` service atomically marks the user verified. One token row per user. Issuance/persistence in registration, delivery and rotation/resend are **not implemented**.
+- **Backend:** Java 21, Spring Boot 4.1.2, Spring MVC, `JdbcClient`, PostgreSQL 17, Flyway and Testcontainers. V1: merchants; V2 (merged): users and merchant memberships; V3 (merged PR #9): verified-at timestamp and email-verification token records. JPA/Hibernate is **not installed**.
+- **Verification foundation merged:** 32 cryptographically random bytes encoded as URL-safe unpadded Base64; SHA-256 of the raw token string stored as a hexadecimal hash (raw token not persisted); repository consumption guarded by expiration/consumed checks; `@Transactional` service atomically marks the user verified. One token row per user. Issuance/persistence in registration, delivery and rotation/resend are **not implemented**.
 - **Security boundary:** membership constraints do not authenticate or authorize users. The existing merchant GET is unauthenticated and must remain development-only until its public/private contract is designed.
-- **Proof:** 32 backend test executions, zero failures/errors/skips locally on 2026-11-09; PR #9 initial-head backend/frontend GitHub Actions both succeeded. Recheck latest-head CI after documentation changes. Full npm development-tooling audit findings remain recorded in [evidence](docs/EVIDENCE_LEDGER.md).
+- **Proof:** 32 backend test executions, zero failures/errors/skips locally on 2026-11-09; PR #9 latest-head backend/frontend GitHub Actions both passed before merge. Full npm development-tooling audit findings remain recorded in [evidence](docs/EVIDENCE_LEDGER.md).
 
 ## Verified local setup
 
@@ -84,7 +84,7 @@ To shut down local PostgreSQL without deleting persistent data, run `docker comp
 - [PR #6](https://github.com/Spsk1313/commercecore/pull/6) — React/TypeScript frontend bootstrap, merged `aaed304`.
 - [PR #7](https://github.com/Spsk1313/commercecore/pull/7) — local browser-to-database merchant read, merged `a42d639`.
 - [PR #8](https://github.com/Spsk1313/commercecore/pull/8) — V2 users/memberships, merged `fe7ae39` (latest-head CI passed).
-- **Open:** [PR #9](https://github.com/Spsk1313/commercecore/pull/9) — V3 email-verification foundation. Initial application-head CI passed; final-head documentation CI is pending verification.
+- **Merged:** [PR #9](https://github.com/Spsk1313/commercecore/pull/9) — V3 email-verification foundation, squash commit `9d192d0`; final-head backend/frontend CI passed.
 
 **Next:** account registration with carefully benchmarked Argon2id password hashing, token issuance/persistence/delivery and verification HTTP/resend workflow; then authenticated sessions, atomic store + OWNER membership and negative cross-tenant authorization tests. See the [delivery board](docs/DELIVERY_BOARD.md).
 

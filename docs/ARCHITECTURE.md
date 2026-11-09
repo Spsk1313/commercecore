@@ -1,7 +1,7 @@
 # Architecture & threat boundaries
 
 
-**Status (2026-11-09):** PR #7 merchant-read walking skeleton and PR #8 V2 user/membership schema are merged (PR #8 merge `fe7ae39`). [PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **open** for the V3 verification schema and transactional service. Registration, session authentication, merchant authorization, complete commerce workflows and production deployment remain unimplemented.
+**Status (2026-11-09):** PR #7 merchant-read walking skeleton and PR #8 V2 user/membership schema are merged (PR #8 merge `fe7ae39`). [PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **merged** as `9d192d0` for the V3 verification schema and transactional service. Registration, session authentication, merchant authorization, complete commerce workflows and production deployment remain unimplemented.
 
 ## Baseline design
 - **Frontend:** React + TypeScript; separate merchant dashboard and customer storefront routes; loading/empty/error/conflict states are first-class UX.
@@ -25,7 +25,7 @@ Browser -> HTTP controller -> authentication/authorization -> application servic
 
 - **V1 (merged):** `merchants(id, name)` with generated identity, required name and nonblank/edge-whitespace/control-character checks.
 - **V2 (merged PR #8):** `users(id, email, password_hash)` with a unique index on `lower(email)`; `merchant_memberships(id, user_id, merchant_id, role)` with required FKs, OWNER/STAFF role check and unique (user_id, merchant_id). This is schema integrity, **not** password hashing, principal authentication, registration or authorization.
-- **V3 (open PR #9):** nullable `users.email_verified_at` and `email_verification_tokens(id, user_id, token_hash, created_at, expires_at, consumed_at)`; unique `user_id` allows one stored verification token per user, and unique `token_hash` prevents duplicates. `CHECK (expires_at > created_at)` enforces timestamp ordering; real-time expiry is checked when attempting consumption.
+- **V3 (merged PR #9):** nullable `users.email_verified_at` and `email_verification_tokens(id, user_id, token_hash, created_at, expires_at, consumed_at)`; unique `user_id` allows one stored verification token per user, and unique `token_hash` prevents duplicates. `CHECK (expires_at > created_at)` enforces timestamp ordering; real-time expiry is checked when attempting consumption.
 - **Current HTTP read:** `GET /api/v1/merchants/{merchantId}` returns 200 `{id,name}`, 404 `ProblemDetail` if absent, and 400 for nonnumeric input. Temporary React merchant-ID search uses a Vite local `/api` proxy. The endpoint lacks authentication/publication policy and is **not safe to expose publicly without review**.
 - **Merchant feature layout:** `merchant/api` → `merchant/application` → `merchant/persistence`. Implemented JDBC repo is behind the merchant query service; there is no merchant write or access control.
 - **Identity layout (PR #9):** `identity/application` contains `VerificationTokenGenerator`, `VerificationTokenHasher`, `InvalidTokenException`, `EmailVerificationService`; `identity/persistence` contains `JdbcVerificationTokenRepository` and `JdbcUserRepository`. Generator uses `SecureRandom` 32 bytes, URL-safe Base64 without padding. Hasher uses SHA-256 of raw-token UTF-8 bytes; only lower-case hex digest is persisted.
@@ -49,5 +49,5 @@ Propose enhancement -> identify measured bottleneck/failure -> consider cheapest
 - [PR #4](https://github.com/Spsk1313/commercecore/pull/4): V1 Flyway/Testcontainers.
 - [PR #7](https://github.com/Spsk1313/commercecore/pull/7): manually verified local browser → API → PostgreSQL read and targeted CI, merged.
 - [PR #8](https://github.com/Spsk1313/commercecore/pull/8): V2 schema, six integrity tests, merged; latest-head backend/frontend CI passed.
-- [PR #9](https://github.com/Spsk1313/commercecore/pull/9): 32 backend tests locally, including verification service transaction fault experiment; initial-head backend/frontend CI passed, final-head checks to reverify.
+- [PR #9](https://github.com/Spsk1313/commercecore/pull/9): 32 backend tests locally, including verification service transaction fault experiment; latest-head backend/frontend CI passed before squash merge.
 - No automated browser-to-DB E2E, public secure auth, concurrent checkout/token-consumption proof, deployment, backup restore, load baseline, formal threat review or user pilot. Do not imply these are shipped.

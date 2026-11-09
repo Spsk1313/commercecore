@@ -26,12 +26,12 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 
 ## Verified implementation evidence
 
-### 2026-11-09 — COM-003 verification foundation (PR #9 open)
+### 2026-11-09 — COM-003 verification foundation (PR #9 merged)
 
-- **Code/PR:** [PR #9](https://github.com/Spsk1313/commercecore/pull/9), application head `6e7be22`. V3 `users.email_verified_at` and `email_verification_tokens` with unique account/hash, timestamps and structural expiry check; secure 32-byte random token generation, URL-safe Base64, SHA-256 hashing of the raw token, guarded `UPDATE ... RETURNING` single-use claim, and transactional user verification. No raw token persistence.
+- **Code/PR:** [PR #9](https://github.com/Spsk1313/commercecore/pull/9), application head `6e7be22`, squash-merged into `main` as `9d192d0`. V3 `users.email_verified_at` and `email_verification_tokens` with unique account/hash, timestamps and structural expiry check; secure 32-byte random token generation, URL-safe Base64, SHA-256 hashing of the raw token, guarded `UPDATE ... RETURNING` single-use claim, and transactional user verification. No raw token persistence.
 - **Learner-run proof:** `env -u COMMERCECORE_DB_PASSWORD ./mvnw test` completed on 2026-11-09 15:56 Toronto with **32 tests, 0 failures/errors/skips**. Token generator/hash unit checks, token repository PostgreSQL single-use/expiry checks, service success and rollback integration tests passed. Earlier versions of suite also passed during implementation.
 - **Mutation experiment:** Learner temporarily removed `@Transactional` from `EmailVerificationService.verify`; rollback test failed as expected because token claim persisted after subsequent state update failure. Annotation restored and test passed. This is evidence of transaction atomicity for the tested two-step workflow, not proof of all concurrent interleavings.
-- **GitHub CI:** Backend CI and frontend CI **passed** on the PR #9 original application head `6e7be22` (GitHub Actions runs `42698924231` and `42698924048` respectively). Any new documentation commit requires fresh latest-head CI verification; do not attribute earlier runs to a later commit.
+- **GitHub CI:** Original-head CI succeeded (backend run `42698924231`, frontend run `42698924048`). The [backend](https://github.com/Spsk1313/commercecore/actions/runs/42701618751) and [frontend](https://github.com/Spsk1313/commercecore/actions/runs/42701618610) checks also passed on final reviewed PR head `598ebf3`, followed by squash merge `9d192d0`. Future changes require their own CI.
 - **Ownership:** Learner implemented code and tests and performed local fault experiment with coaching/review; coach maintains project documentation. No independent delayed mastery assessment recorded.
 - **Scope:** E2 local transactional workflow and PostgreSQL verification, with E3 reproducibility for initial PR CI checks within their tested scope. No registration/verify HTTP endpoint, secure password storage, email delivery, resend, session authentication, tenant authorization, simultaneous token-claim race test, deployed workflow or external user impact.
 

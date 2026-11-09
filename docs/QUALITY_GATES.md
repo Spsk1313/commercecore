@@ -1,7 +1,7 @@
 # Quality gates and Definition of Done
 
 
-**Status (2026-11-09):** COM-002 local walking skeleton Verified; PR #8 identity/membership migration merged; [PR #9](https://github.com/Spsk1313/commercecore/pull/9) email-verification foundation In Review. **32 local backend tests** and initial PR #9 backend/frontend CI passed at `6e7be22`; final-head checks need revalidation after documentation changes. These narrow proofs do **not** satisfy identity security or MVP release gates.
+**Status (2026-11-09):** COM-002 local walking skeleton Verified; PR #8 identity/membership migration merged; [PR #9](https://github.com/Spsk1313/commercecore/pull/9) email-verification foundation merged/Verified at the limited workflow level. **32 local backend tests** and final PR #9 backend/frontend CI passed at `598ebf3`; merged as `9d192d0`. These narrow proofs do **not** satisfy identity security or MVP release gates.
 
 ## Feature Definition of Done
 A feature may be marked **Verified** only when:
