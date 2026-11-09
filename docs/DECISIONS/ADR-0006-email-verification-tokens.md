@@ -1,6 +1,6 @@
 # ADR-0006 — Opaque single-use email verification tokens
 
-**Status:** Provisional; mechanism implemented on open PR #9, explicit learner acceptance and delivery-policy review pending  
+**Status:** Provisional; mechanism merged in PR #9, explicit learner acceptance and delivery-policy review pending  
 **Date:** 2026-11-09  
 **Scope:** COM-003 identity verification foundation  
 **Decider:** Implementing engineer (review/sign-off pending)
@@ -26,7 +26,7 @@ CommerceCore must verify ownership of an account email. A verification link is a
 
 ## Verification and limitations
 
-[PR #9](https://github.com/Spsk1313/commercecore/pull/9) has learner-reported **32 passing local backend tests** covering token format/hash, expiry rejection, sequential single use, successful verification and transaction rollback on a failed account transition. Learner temporarily removed `@Transactional`: rollback test failed; restoring it passed. Initial PR #9 backend/frontend CI succeeded on application head `6e7be22`; recheck latest-head CI after documentation commits. **Not proven:** simultaneous multi-connection consumption, full security audit, email sending, registration, HTTP API, session security or production readiness.
+[PR #9](https://github.com/Spsk1313/commercecore/pull/9) has learner-reported **32 passing local backend tests** covering token format/hash, expiry rejection, sequential single use, successful verification and transaction rollback on a failed account transition. Learner temporarily removed `@Transactional`: rollback test failed; restoring it passed. PR #9 latest-head [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/42701618751) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/42701618610) passed on `598ebf3` before squash merge `9d192d0`. **Not proven:** simultaneous multi-connection consumption, full security audit, email sending, registration, HTTP API, session security or production readiness.
 
 ## Open security and product decisions
 

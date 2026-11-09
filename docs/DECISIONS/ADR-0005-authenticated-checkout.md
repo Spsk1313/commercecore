@@ -27,4 +27,4 @@ We need a clear customer order-ownership and security boundary for the first end
 
 ## Follow-up (2026-11-09)
 
-PR #8 **merged** user and merchant membership persistence; PR #9 contains an **open** email-verification foundation. Neither introduces login/sessions, authenticated customer identity or checkout authorization. Decide account/session implementation, CSRF/browser security and customer/merchant principal mapping as COM-003 progresses. Implement the negative HTTP authorization and checkout invariants in COM-003/COM-006 before marking the policy implemented.
+PR #8 **merged** user and merchant membership persistence; PR #9 **merged** an email-verification foundation. Neither introduces login/sessions, authenticated customer identity or checkout authorization. Decide account/session implementation, CSRF/browser security and customer/merchant principal mapping as COM-003 progresses. Implement the negative HTTP authorization and checkout invariants in COM-003/COM-006 before marking the policy implemented.

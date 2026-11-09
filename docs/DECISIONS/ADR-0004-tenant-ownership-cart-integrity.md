@@ -20,5 +20,5 @@ Repeated merchant_id in child tables can be justified by cross-table integrity c
 ## Verification state (2026-11-09)
 
 - [PR #8](https://github.com/Spsk1313/commercecore/pull/8) **merged** `users` and `merchant_memberships` schema with per-merchant role/FK/uniqueness constraints and six PostgreSQL integrity tests. These prove limited relational properties, **not** authenticated authorization.
-- [PR #9](https://github.com/Spsk1313/commercecore/pull/9) adds a separate email-verification *foundation* under review; it does not establish merchant ownership or access control.
+- [PR #9](https://github.com/Spsk1313/commercecore/pull/9) merged a separate email-verification *foundation*; it does not establish merchant ownership or access control.
 - Merchant-owned Product/Cart/Order schema, composite cross-merchant item integrity, principal-derived access checks, negative cross-tenant/cross-customer tests and protected endpoints remain **unimplemented**. Exact API policy is still open.
