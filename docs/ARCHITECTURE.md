@@ -36,6 +36,8 @@ Browser -> HTTP controller -> authentication/authorization -> application servic
 
 Merchant is the V1 tenant (one storefront). Products, inventory, carts and orders are merchant-owned; authenticated checkout, non-reserving carts, atomic stock allocation and cancellation/fulfillment rules remain **approved designs, not code** (ADRs 0002–0005). Service authorization must derive the principal from trusted authentication and verify membership/role and resource ownership; client IDs alone confer no privilege.
 
+The token, hash-at-rest and transactional-consumption tradeoffs are recorded in [provisional ADR-0006](DECISIONS/ADR-0006-email-verification-tokens.md). Explicit acceptance and delivery/resend policy review remain pending.
+
 **Next identity/security slices:** input normalization, validation and anti-enumeration/rate limits; Argon2id password hashing and parameter tuning; safe pending-account lifecycle and token issuance with delivery/resend failure policy; HTTP verification and authenticated session/CSRF boundaries; transactional merchant+OWNER creation and cross-tenant negative tests. These are planned, not complete.
 
 ## Architecture evolution gate

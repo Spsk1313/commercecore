@@ -17,7 +17,8 @@ Merchant creates a store and product; customer browses, submits pay-on-pickup/si
 - `docs/PRODUCT_SPEC.md` — product behavior, scope, invariants, acceptance criteria.
 - `docs/ARCHITECTURE.md` — proposed modules and actual system shape (keep accurate).
 - `docs/DELIVERY_BOARD.md` — authoritative implementation status and next work.
-- `docs/DECISIONS/ADR-0001-modular-monolith.md` — reasoned, revisitable choices.
+- `docs/DECISIONS/ADR-0001-modular-monolith.md` — modular-monolith choice, pending explicit acceptance.
+- `docs/DECISIONS/ADR-0006-email-verification-tokens.md` — token/hash/transaction rationale, provisional.
 - `docs/QUALITY_GATES.md` — definition of done, verification and release gates.
 - `docs/EVIDENCE_LEDGER.md` — links to actual tests, commits, demonstrations, measurements.
 - `docs/OPERATIONS.md` — startup, environments, deployments, monitoring, backup and recovery.

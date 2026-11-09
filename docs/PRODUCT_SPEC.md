@@ -22,6 +22,8 @@ Implementing engineer explicitly approved: e-commerce, multiple merchant tenants
 
 [PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **open**: V3 adds `email_verified_at` and single-row-per-user token storage; service uses secure random token/hash utilities and one database transaction to consume a valid token and mark an account verified. Learner reported 32 backend tests and successful rollback mutation experiment; initial PR #9 CI passed. **There is no registration or verify HTTP endpoint, token issuance/email sending, resend/rotation, login or production rollout.**
 
+The token-design rationale is recorded in [provisional ADR-0006](DECISIONS/ADR-0006-email-verification-tokens.md); public signup and delivery policy remain open.
+
 **Next product-enabling work:** implement secure registration and pending-email verification (including Argon2id, input validation and abuse controls), email-delivery strategy and verification API; then authenticated sessions, atomic merchant+OWNER membership creation, and negative tenant authorization tests before catalog work.
 
 ## Users and jobs

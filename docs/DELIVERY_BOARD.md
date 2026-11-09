@@ -62,6 +62,10 @@ PR #7 was already merged (`a42d639`). PR #8 subsequently merged as `fe7ae39` aft
 - [ADR-0004](DECISIONS/ADR-0004-tenant-ownership-cart-integrity.md): merchant tenant ownership and cart integrity. Accepted policy; no implementation.
 - [ADR-0005](DECISIONS/ADR-0005-authenticated-checkout.md): customer authentication before checkout, public browsing. Accepted policy; no implementation.
 
+## COM-003 provisional security decision
+
+- [ADR-0006](DECISIONS/ADR-0006-email-verification-tokens.md) records the PR #9 opaque token/hash/transaction choices, alternatives and unresolved delivery/resend/abuse controls. **Provisional** pending learner review, not an implemented authentication flow.
+
 ## Feature card template (copy under appropriate ID)
 
 - Scenario / user value:
