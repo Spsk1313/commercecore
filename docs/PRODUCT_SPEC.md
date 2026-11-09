@@ -1,7 +1,7 @@
 # Product specification — CommerceCore
 
 
-**Status (2026-11-09):** Product direction and authenticated-checkout policy approved (2026-10-25); detailed V1 release scope remains under review. Local COM-002 integration and V2 identity/membership schema are merged. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) adds the email-verification **foundation under review**. No account signup/login, security-enforced merchant flow or commerce journey has shipped.
+**Status (2026-11-09):** Product direction and authenticated-checkout policy approved (2026-10-25); detailed V1 release scope remains under review. Local COM-002 integration and V2 identity/membership schema are merged. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) merged the email-verification foundation (not a complete registration feature). No account signup/login, security-enforced merchant flow or commerce journey has shipped.
 
 ## Approved product statement — 2026-10-25
 > CommerceCore is a multi-merchant e-commerce application where independent businesses manage their own product catalogues and inventory, customers browse merchant products and place orders, and merchants fulfill orders through a secure web application.
@@ -20,7 +20,7 @@ Implementing engineer explicitly approved: e-commerce, multiple merchant tenants
 
 [PR #8](https://github.com/Spsk1313/commercecore/pull/8) **merged** Flyway V2 `users` and `merchant_memberships` (case-insensitive email uniqueness, role/FK and pair-uniqueness constraints). Learner reported 24 local tests; latest-head CI passed. This schema does not validate credentials, hash passwords, authenticate sessions or enforce tenant isolation.
 
-[PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **open**: V3 adds `email_verified_at` and single-row-per-user token storage; service uses secure random token/hash utilities and one database transaction to consume a valid token and mark an account verified. Learner reported 32 backend tests and successful rollback mutation experiment; initial PR #9 CI passed. **There is no registration or verify HTTP endpoint, token issuance/email sending, resend/rotation, login or production rollout.**
+[PR #9](https://github.com/Spsk1313/commercecore/pull/9) **merged** as `9d192d0`: V3 adds `email_verified_at` and single-row-per-user token storage; service uses secure random token/hash utilities and one database transaction to consume a valid token and mark an account verified. Learner reported 32 backend tests and successful rollback mutation experiment; final-head PR #9 CI passed. **There is no registration or verify HTTP endpoint, token issuance/email sending, resend/rotation, login or production rollout.**
 
 The token-design rationale is recorded in [provisional ADR-0006](DECISIONS/ADR-0006-email-verification-tokens.md); public signup and delivery policy remain open.
 

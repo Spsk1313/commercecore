@@ -1,10 +1,10 @@
 # Changelog — verified engineering changes
 
-## 2026-11-09 — COM-003 email-verification foundation ([PR #9 open](https://github.com/Spsk1313/commercecore/pull/9))
+## 2026-11-09 — COM-003 email-verification foundation ([PR #9 merged](https://github.com/Spsk1313/commercecore/pull/9))
 - Added Flyway V3: optional `users.email_verified_at`, one-token-row-per-user `email_verification_tokens`, unique SHA-256 hash, timestamp and expiry-order constraints. V1/V2 applied migrations are unchanged.
 - Implemented `VerificationTokenGenerator` (32 random bytes / URL-safe Base64), `VerificationTokenHasher` (SHA-256 of raw-token UTF-8), guarded JDBC token consumption, verified-at user update, and `@Transactional EmailVerificationService.verify`.
 - Added unit/PostgreSQL integration coverage for token generation/hash, sequential single-use and expiry, successful verification and rollback. Learner's final local run: **32 passing tests, 0 failures/errors/skips**. A deliberate removal of `@Transactional` failed the rollback test; restoring it passed.
-- Initial PR #9 backend/frontend GitHub Actions passed on application head `6e7be22`. **PR remains open; documentation-updated latest-head CI must be rechecked.**
+- PR #9 latest-head backend/frontend Actions passed on `598ebf3`, then squash-merged into `main` as `9d192d0`.
 - Added [provisional ADR-0006](DECISIONS/ADR-0006-email-verification-tokens.md) for token/hash/transaction choices and unresolved delivery/abuse policy; explicit acceptance pending.
 - **Not yet built:** signup/login API, Argon2id password storage, token issuance/email delivery, HTTP verification/resend, merchant authorization, public deployment or external users.
 
