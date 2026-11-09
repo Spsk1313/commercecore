@@ -35,8 +35,6 @@ E0 planned -> E1 code shown -> E2 independently executed/tested -> E3 integrated
 - **Ownership:** Learner implemented code and tests and performed local fault experiment with coaching/review; coach maintains project documentation. No independent delayed mastery assessment recorded.
 - **Scope:** E2 local transactional workflow and PostgreSQL verification, with E3 reproducibility for initial PR CI checks within their tested scope. No registration/verify HTTP endpoint, secure password storage, email delivery, resend, session authentication, tenant authorization, simultaneous token-claim race test, deployed workflow or external user impact.
 
-### 2026-11-08 — COM-003
-
 ### 2026-11-08 — COM-003 user/membership constraints (PR #8 merged)
 
 - **Code/PR:** [PR #8](https://github.com/Spsk1313/commercecore/pull/8), **merged** into `main` as `fe7ae39` after latest-head backend/frontend CI passed (run IDs 42517097705 / 42517097800); initial application head `fafb3bf`; Flyway V2 adds users, functional unique index on `lower(email)`, and merchant memberships with OWNER/STAFF role constraint, non-null role, two foreign keys and unique (user_id, merchant_id).

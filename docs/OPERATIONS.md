@@ -1,6 +1,7 @@
 # Operations and reproducibility runbook
 
-**Status (2026-11-01):** [PR #6](https://github.com/Spsk1313/commercecore/pull/6) merged; [PR #7](https://github.com/Spsk1313/commercecore/pull/7) adds a locally verified React → Spring Boot → PostgreSQL merchant-read flow. Initial PR #7 backend/frontend CI passed. No production deployment, secure merchant workflow or tenant authorization. Post-documentation [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) passed at audit head `cd9e723`; verify the latest commit before merge.
+
+**Status (2026-11-09):** COM-002 local merchant read (PR #7) and COM-003 V2 users/memberships (PR #8, merged `fe7ae39`) are on `main`. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **open** for V3 verification data and transactional service logic. 32 learner-run backend tests passed; backend/frontend CI passed at PR #9's initial application head `6e7be22`. Final-head CI must be rechecked after documentation updates. No public deployment, registration/login, email delivery, HTTPS app, secure merchant authorization or real-user traffic.
 
 ## Environments
 - **Local:** Java 21 / Spring Boot 4.1.2; PostgreSQL 17 via Docker Compose with loopback host port `127.0.0.1:5433`, database and user `commercecore`, named persistent volume.
@@ -31,7 +32,7 @@ cd backend
 
 `.env` is ignored by Git and consumed by Docker Compose, but it is **not automatically inherited** by an independently launched Maven/Java process. The application's `application.yaml` references `${COMMERCECORE_DB_PASSWORD}`; never commit the real password or print it in logs. This runbook's local URL/username are development-only values.
 
-Spring Boot's JDBC datasource connects to `jdbc:postgresql://127.0.0.1:5433/commercecore`. Flyway discovers `src/main/resources/db/migration/V1__create_merchants.sql`, creates `public.flyway_schema_history` if necessary, and records successful execution. The first migration creates `public.merchants` with generated identity ID and non-null/nonblank/whitespace/control-character name constraints.
+Spring Boot's JDBC datasource connects to `jdbc:postgresql://127.0.0.1:5433/commercecore`. Flyway applies versioned migrations: **V1** creates merchants with name constraints; **V2** creates users with a case-insensitive unique email index and merchant memberships with FK/role/uniqueness constraints; **V3** (PR #9) adds `users.email_verified_at` and the one-row-per-user `email_verification_tokens` table with SHA-256 token hashes and timestamp constraints. Flyway records applications in `public.flyway_schema_history`. No token issuance, email sending or registration API is included in these migration steps.
 
 ### Inspect local PostgreSQL and migrations
 
@@ -53,11 +54,12 @@ With Docker Engine available, from `backend/`:
 env -u COMMERCECORE_DB_PASSWORD ./mvnw test
 ```
 
-The test class `persistence/MerchantSchemaIntegrationTest` supplies a PostgreSQL Testcontainers service connection, runs Flyway, verifies the table exists, rejects five invalid-name inputs, and inserts/reads five valid names with test-managed transaction rollback. The later PR #7 backend suite reported **18 executions passed locally**: 11 schema tests, 2 real PostgreSQL repository tests, 2 Mockito service tests and 3 Spring MVC tests. [PR #7 backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979195) passed on its initial head. No Compose database or preexisting test records are needed.
+
+The backend suite uses `@ServiceConnection` PostgreSQL Testcontainers and does not need a Compose database or local `.env`. It now covers V1 merchant checks, V2 user/membership integrity, merchant-read MVC/JDBC, token generator/hash, sequential token consumption and expired-token rejection, and successful/rollback email verification service transactions. **2026-11-09 local run: 32 tests, zero failures/errors/skips.** Learner also intentionally removed `@Transactional` from the service and observed rollback-test failure, then restored it and observed success. Initial PR #9 backend/frontend CI passed on `6e7be22`, but recheck after documentation commits. Tests do not exercise a live mail provider, concurrent verification claims, or production session/security policy.
 
 Use `docker compose down` (from the repository root) to remove local containers while keeping the named data volume. **Never use `docker compose down -v` for routine shutdown**: it removes the named volume. Changing `.env` later does not rotate credentials already initialized within an existing PostgreSQL data volume.
 
-## Frontend local operations (PRs #6–#7)
+## Frontend local operations (PRs #6–#9)
 
 From the repository root, with Node.js 22 and npm installed:
 
@@ -95,8 +97,8 @@ docker compose exec -T db psql -U commercecore -d commercecore \
 
 ## Limitations and future operational work
 - Local Spring Boot health, narrow merchant-read API and browser-to-database flow were verified manually; no public deployment, protected merchant workflow or complete commerce experience exists.
-- Database constraints are tested, but merchant identity/tenant isolation, backup restore, migration downgrade procedures, concurrency and production security remain unverified.
-- Define deployment parameters, secret rotation, HTTPS, observability, runbooks and backup/recovery drills before handling real users.
+- V2 identity/membership and V3 token-table constraints have targeted tests, and the token service has success/rollback tests. **Credential hashing, registration, login/session, email delivery, tenant isolation, backup restore, migration downgrade procedures, multi-connection token concurrency and production security remain unverified.**
+- Before a secure release: design registration/password hashing, verification email provider, token-delivery secrecy, resend/rotation and retention, authenticated principal/session and CSRF, tenant authorization; define deployment parameters, external secrets, HTTPS, observability and backup/recovery drills. Do not log raw verification tokens or include live credentials in committed fixtures.
 
 ## Incident record template
 Time, symptom, blast radius, hypothesis, exact reproducer, logs/metrics, root cause, mitigation, validation, prevention, affected ADR, supporting commits. Synthetic faults must be labeled simulated.
