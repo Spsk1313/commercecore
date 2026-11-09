@@ -1,7 +1,7 @@
 # ADR-0004 — Tenant ownership, cart authorization and relational integrity
 
 Date: 2026-10-25
-Status: Accepted policy; implementation/schema design pending
+Status: Accepted policy; V2 identity/merchant-membership persistence implemented, tenant authorization and cart/product ownership schema still pending
 Owner: Implementing engineer; reviewer: engineering coach
 
 ## Context
@@ -17,5 +17,8 @@ CommerceCore V1 uses Merchant as the tenant (one storefront per merchant). A cus
 ## Consequences and tradeoffs
 Repeated merchant_id in child tables can be justified by cross-table integrity constraints but requires deliberate constraints and indexes. Composite FKs establish relational consistency, not caller identity authorization. Avoid blindly applying this pattern to every table.
 
-## Verification state
-Design review discussion only. No migration, code, negative tests, commit or deployment has been verified. Exact SQL schema and API status policy remain to be written and reviewed.
+## Verification state (2026-11-09)
+
+- [PR #8](https://github.com/Spsk1313/commercecore/pull/8) **merged** `users` and `merchant_memberships` schema with per-merchant role/FK/uniqueness constraints and six PostgreSQL integrity tests. These prove limited relational properties, **not** authenticated authorization.
+- [PR #9](https://github.com/Spsk1313/commercecore/pull/9) adds a separate email-verification *foundation* under review; it does not establish merchant ownership or access control.
+- Merchant-owned Product/Cart/Order schema, composite cross-merchant item integrity, principal-derived access checks, negative cross-tenant/cross-customer tests and protected endpoints remain **unimplemented**. Exact API policy is still open.

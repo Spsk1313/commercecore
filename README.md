@@ -1,6 +1,8 @@
 # CommerceCore — Engineering Project
 
-**Status (2026-11-01):** React/TypeScript/Vite bootstrap [PR #6](https://github.com/Spsk1313/commercecore/pull/6) is merged. Local merchant-read React → Spring Boot → PostgreSQL integration and targeted tests are verified on open [PR #7](https://github.com/Spsk1313/commercecore/pull/7), with both initial CI workflows passed. No authenticated merchant workflow, tenant security, production deployment or verified real-user value.
+
+**Status (2026-11-09):** COM-002 local React → API → PostgreSQL read-path baseline is **Verified** after [PR #7](https://github.com/Spsk1313/commercecore/pull/7) merged. COM-003 Flyway V2 accounts and memberships merged in [PR #8](https://github.com/Spsk1313/commercecore/pull/8) as `fe7ae39`. **[PR #9](https://github.com/Spsk1313/commercecore/pull/9) remains open** with Flyway V3 email-verification schema and transactional verification logic. Learner-run backend suite: **32 tests passed**; initial PR #9 backend and frontend CI passed at `6e7be22`. There is **no** registration/login API, password hashing implementation, verification email delivery/HTTP endpoint, tenant authorization, production deployment or verified real-user value.
+
 **Owner:** Learner (sole accountable implementing engineer).
 **Coach:** Technical lead/reviewer; not substitute implementation author.
 **Target:** A production-minded, independently built, Shopify-inspired commerce vertical slice by **2026-11-30** (scope gates, not a promise of Shopify feature parity).
@@ -15,7 +17,8 @@ Merchant creates a store and product; customer browses, submits pay-on-pickup/si
 - `docs/PRODUCT_SPEC.md` — product behavior, scope, invariants, acceptance criteria.
 - `docs/ARCHITECTURE.md` — proposed modules and actual system shape (keep accurate).
 - `docs/DELIVERY_BOARD.md` — authoritative implementation status and next work.
-- `docs/DECISIONS/ADR-0001-modular-monolith.md` — reasoned, revisitable choices.
+- `docs/DECISIONS/ADR-0001-modular-monolith.md` — modular-monolith choice, pending explicit acceptance.
+- `docs/DECISIONS/ADR-0006-email-verification-tokens.md` — token/hash/transaction rationale, provisional.
 - `docs/QUALITY_GATES.md` — definition of done, verification and release gates.
 - `docs/EVIDENCE_LEDGER.md` — links to actual tests, commits, demonstrations, measurements.
 - `docs/OPERATIONS.md` — startup, environments, deployments, monitoring, backup and recovery.
@@ -25,9 +28,14 @@ Merchant creates a store and product; customer browses, submits pay-on-pickup/si
 ## Source of truth
 Once a Git repository exists, these files inside the repo are authoritative for product facts. The coach may keep a **brief mirrored checkpoint** in Software Prep records; it must link to/quote the actual commit and cannot claim to have reviewed local files or CI unless artifacts/logs were supplied or read from connected GitHub. Do not duplicate maintenance for no reason.
 
-## Frontend bootstrap (PR #6 merged) and local read path (PR #7 open)
 
-Frontend sources reside in `frontend/`. See the [frontend runbook](frontend/README.md) for Node.js 22 prerequisites and `npm ci`, `npm run dev`, `npm run lint` and `npm run build` commands. [Frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363240) and [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41350363213) passed after the application-shell cleanup on commit `d1ecd86`. PR #6 squash-merged as `aaed304`. PR #7 now connects a temporary merchant-ID search UI to the backend using a local Vite `/api` proxy, with input validation, loading and error states; it is an integration harness, not a storefront or secure merchant feature. The full npm development-dependency audit has an outstanding moderate-severity finding; details are in the evidence ledger.
+## Current verified engineering baseline
+
+- **Frontend:** React 19, TypeScript and Vite 8; PR #7 merged a temporary merchant-ID search with input validation, loading/errors and a local development `/api` proxy. This is a walking-skeleton integration harness, not a storefront or secure merchant dashboard. See [frontend README](frontend/README.md).
+- **Backend:** Java 21, Spring Boot 4.1.2, Spring MVC, `JdbcClient`, PostgreSQL 17, Flyway and Testcontainers. V1: merchants; V2 (merged): users and merchant memberships; V3 (open PR #9): verified-at timestamp and email-verification token records. JPA/Hibernate is **not installed**.
+- **Verification foundation under review:** 32 cryptographically random bytes encoded as URL-safe unpadded Base64; SHA-256 of the raw token string stored as a hexadecimal hash (raw token not persisted); repository consumption guarded by expiration/consumed checks; `@Transactional` service atomically marks the user verified. One token row per user. Issuance/persistence in registration, delivery and rotation/resend are **not implemented**.
+- **Security boundary:** membership constraints do not authenticate or authorize users. The existing merchant GET is unauthenticated and must remain development-only until its public/private contract is designed.
+- **Proof:** 32 backend test executions, zero failures/errors/skips locally on 2026-11-09; PR #9 initial-head backend/frontend GitHub Actions both succeeded. Recheck latest-head CI after documentation changes. Full npm development-tooling audit findings remain recorded in [evidence](docs/EVIDENCE_LEDGER.md).
 
 ## Verified local setup
 
@@ -52,7 +60,7 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-Spring Boot connects to PostgreSQL at `jdbc:postgresql://127.0.0.1:5433/commercecore` and runs pending Flyway migrations at startup. V1 creates `merchants` and `flyway_schema_history`; do not edit already-applied migrations. The application startup above was observed locally on 2026-10-27; `/actuator/health` returned HTTP 200 in the earlier backend smoke check. This is a local development configuration, not a production deployment.
+Spring Boot connects to PostgreSQL at `jdbc:postgresql://127.0.0.1:5433/commercecore` and runs pending Flyway migrations at startup: V1 merchants, V2 users/memberships, V3 verification tokens (PR #9). Flyway records migration history; do not edit versioned migrations already applied to persistent databases. Earlier local startup and `/actuator/health` HTTP 200 checks are not deployment evidence.
 
 **Isolated tests (Docker required, no `.env` needed):**
 
@@ -61,18 +69,24 @@ cd backend
 env -u COMMERCECORE_DB_PASSWORD ./mvnw test
 ```
 
-The JUnit integration test starts a disposable PostgreSQL 17 Testcontainers instance through `@ServiceConnection`, runs Flyway V1, and checks merchant-table behavior. The updated suite reported **18 tests passed locally**, and [PR #7 backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979195) passed on the initial feature head. Tests do not require a pre-existing Compose database.
+
+Backend tests use disposable PostgreSQL 17 Testcontainers via Spring `@ServiceConnection` without the local Compose database or `.env`. The latest learner-reported run (2026-11-09) completed **32 tests with zero failures/errors/skips**. Tests cover merchant read, V1/V2 integrity, token format/hash, sequential single-use and expired-token rejection, successful user verification, and rollback when updating an already-verified user fails. Removing the service's `@Transactional` caused its rollback test to fail; restoring it passed. This is not a concurrent-use stress test or an end-to-end signup/email test.
 
 To shut down local PostgreSQL without deleting persistent data, run `docker compose down` from repository root. **Do not use `docker compose down -v` during ordinary shutdown.**
 
-## Merged checkpoints
-- [PR #1](https://github.com/Spsk1313/commercecore/pull/1) — backend bootstrap and CI, merged `ba058a1`.
-- [PR #2](https://github.com/Spsk1313/commercecore/pull/2) — PostgreSQL Compose and persistence verification, merged `0ec4cfc`.
-- [PR #3](https://github.com/Spsk1313/commercecore/pull/3) — documentation and session handoff, merged `7088b72`.
-- [PR #4](https://github.com/Spsk1313/commercecore/pull/4) — JDBC/Flyway V1 and Testcontainers integration, merged `6e3d326`; passing [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/40616327894).
-- [PR #6](https://github.com/Spsk1313/commercecore/pull/6) — frontend bootstrap/CI, squash-merged `aaed304`.
-- **Current COM-002 review:** [PR #7](https://github.com/Spsk1313/commercecore/pull/7), temporary local merchant-read full-stack integration; [backend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782880) and [frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) passed at audited documentation head `cd9e723`. Confirm the latest commit's checks, squash-merge, and start COM-003 merchant onboarding and tenant isolation.
-- See [delivery board](docs/DELIVERY_BOARD.md), [evidence ledger](docs/EVIDENCE_LEDGER.md), and [operations runbook](docs/OPERATIONS.md).
+
+## Merged checkpoints and active review
+
+- [PR #1](https://github.com/Spsk1313/commercecore/pull/1) — backend bootstrap/CI, merged `ba058a1`.
+- [PR #2](https://github.com/Spsk1313/commercecore/pull/2) — local PostgreSQL Compose, merged `0ec4cfc`.
+- [PR #3](https://github.com/Spsk1313/commercecore/pull/3) — documentation baseline, merged `7088b72`.
+- [PR #4](https://github.com/Spsk1313/commercecore/pull/4) — Flyway V1/JDBC/Testcontainers, merged `6e3d326`.
+- [PR #6](https://github.com/Spsk1313/commercecore/pull/6) — React/TypeScript frontend bootstrap, merged `aaed304`.
+- [PR #7](https://github.com/Spsk1313/commercecore/pull/7) — local browser-to-database merchant read, merged `a42d639`.
+- [PR #8](https://github.com/Spsk1313/commercecore/pull/8) — V2 users/memberships, merged `fe7ae39` (latest-head CI passed).
+- **Open:** [PR #9](https://github.com/Spsk1313/commercecore/pull/9) — V3 email-verification foundation. Initial application-head CI passed; final-head documentation CI is pending verification.
+
+**Next:** account registration with carefully benchmarked Argon2id password hashing, token issuance/persistence/delivery and verification HTTP/resend workflow; then authenticated sessions, atomic store + OWNER membership and negative cross-tenant authorization tests. See the [delivery board](docs/DELIVERY_BOARD.md).
 
 ## Product naming
 CommerceCore is an independent training project. Inspired by *public* Shopify workflow and engineering literature, not affiliated with or an endorsed Shopify product. No proprietary code or interface assets copied.

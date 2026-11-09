@@ -18,5 +18,9 @@ One Spring Boot deployable, modular by business capability, one PostgreSQL datab
 ## Consequences
 Benefits: faster end-to-end delivery, transaction simplicity, less ops burden. Costs: shared deployment/scaling, need to enforce modularity via boundaries/tests/architecture review. Future extraction only when supported by measurement and organizational need.
 
+## Implementation checkpoint — 2026-11-09
+
+The repository already follows the **proposed** modular-monolith shape: one Java 21/Spring Boot 4.1.2 backend, PostgreSQL with Flyway and `JdbcClient`, React/TypeScript as a separate frontend, feature-local `merchant` and `identity` application/persistence packages. V2 identity/membership schema is merged (PR #8), and the V3 verification service is under review (PR #9). **Architecture use does not by itself constitute explicit acceptance of this ADR**; status remains Proposed pending the learner's design review. No microservice, queue, cache, deployment or proven high-scale traffic.
+
 ## Verification
 Learner draws module dependency diagram, identifies where transaction and authorization rules live, demonstrates feature changes limited to relevant modules. Update status to Accepted only after explanation and review.

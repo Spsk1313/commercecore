@@ -1,7 +1,7 @@
 # Product specification — CommerceCore
 
-**Status:** Product mission and authenticated-checkout policy approved by implementing engineer on 2026-10-25; detailed V1 feature scope and contracts remain under review. **Implementation status checked:** 2026-11-08; product decisions last reviewed 2026-10-25.
 
+**Status (2026-11-09):** Product direction and authenticated-checkout policy approved (2026-10-25); detailed V1 release scope remains under review. Local COM-002 integration and V2 identity/membership schema are merged. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) adds the email-verification **foundation under review**. No account signup/login, security-enforced merchant flow or commerce journey has shipped.
 
 ## Approved product statement — 2026-10-25
 > CommerceCore is a multi-merchant e-commerce application where independent businesses manage their own product catalogues and inventory, customers browse merchant products and place orders, and merchants fulfill orders through a secure web application.
@@ -13,11 +13,18 @@ Implementing engineer explicitly approved: e-commerce, multiple merchant tenants
 - Deliberately not included initially: real payments, returns/refunds, taxes/shipping calculations, discounts, reviews, marketplace search, advanced analytics, Redis, message broker, AI, microservices. Those may be later increments after a working verified release.
 - **Approved in COM-001.3:** V1 checkout requires an authenticated customer account. Catalogue browsing remains public. Guest checkout and anonymous-cart merging are excluded from the initial release. Cart login timing is still to be specified; do not infer that all cart UI actions require login merely from the checkout decision.
 
-## COM-002 foundation and COM-003 schema checkpoint — PRs #7–#8
 
-[PR #6](https://github.com/Spsk1313/commercecore/pull/6) merged the frontend scaffold. [PR #7](https://github.com/Spsk1313/commercecore/pull/7) subsequently merged the **temporary local-only merchant lookup**: `GET /api/v1/merchants/{merchantId}` returns `id` and `name` on 200, 404 ProblemDetail for missing rows, and 400 for nonnumeric path values. A React form accesses it through Vite's local dev proxy. The path was exercised against local PostgreSQL, and initial PR #7 CI passed.
+## Implemented foundation and current COM-003 checkpoint — PRs #7–#9
 
-**Product distinction:** This is a walking-skeleton integration check, not a merchant journey, secured store, or evidence of market demand. There is no merchant account, tenant isolation or public/private visibility model. [PR #8](https://github.com/Spsk1313/commercecore/pull/8) now proposes the COM-003 `users` and `merchant_memberships` schema with verified database constraints (24 local backend test executions, initial head CI passed). No credentials are accepted, users registered or merchants authorized by that migration alone. Next actual product value: implement secure registration/login and atomic merchant onboarding, then enforce membership-scoped authorization before catalog workflows. Do not publish the current read endpoint until its access policy and authorization are designed.
+[PR #6](https://github.com/Spsk1313/commercecore/pull/6) established the React frontend. [PR #7](https://github.com/Spsk1313/commercecore/pull/7) merged the temporary local merchant-ID read path: backend 200 response, 404 ProblemDetail and 400 for invalid path types; React uses a Vite development proxy. This is **not** merchant onboarding, an authorized dashboard, a public storefront or verified market value.
+
+[PR #8](https://github.com/Spsk1313/commercecore/pull/8) **merged** Flyway V2 `users` and `merchant_memberships` (case-insensitive email uniqueness, role/FK and pair-uniqueness constraints). Learner reported 24 local tests; latest-head CI passed. This schema does not validate credentials, hash passwords, authenticate sessions or enforce tenant isolation.
+
+[PR #9](https://github.com/Spsk1313/commercecore/pull/9) is **open**: V3 adds `email_verified_at` and single-row-per-user token storage; service uses secure random token/hash utilities and one database transaction to consume a valid token and mark an account verified. Learner reported 32 backend tests and successful rollback mutation experiment; initial PR #9 CI passed. **There is no registration or verify HTTP endpoint, token issuance/email sending, resend/rotation, login or production rollout.**
+
+The token-design rationale is recorded in [provisional ADR-0006](DECISIONS/ADR-0006-email-verification-tokens.md); public signup and delivery policy remain open.
+
+**Next product-enabling work:** implement secure registration and pending-email verification (including Argon2id, input validation and abuse controls), email-delivery strategy and verification API; then authenticated sessions, atomic merchant+OWNER membership creation, and negative tenant authorization tests before catalog work.
 
 ## Users and jobs
 - **Merchant/operator:** create an account/store, manage sellable items and finite inventory, review orders, fulfill or cancel orders.
@@ -61,7 +68,7 @@ Implementing engineer explicitly approved: e-commerce, multiple merchant tenants
 No real card collection; no marketplace discovery engine; no multi-region service mesh; no preemptive microservices; no mandatory AI assistant, Redis or message broker; no claim of production SLA or million-user capacity. Advanced capabilities require a justified requirement, hypothesis, metric and ADR.
 
 ## Open design questions (learner owns)
-- Authentication/session choice and CSRF/security implications?
+- Registration validation, Argon2id parameters, verification-token issuance/delivery/resend, session authentication and CSRF/security implications?
 - Merchant/store/tenant relationship and customer privacy?
 - How will order idempotency behave if a request times out after commit?
 - How exactly does cancellation return allocated stock without double-release? V1 allocation decision is accepted in ADR-0002.

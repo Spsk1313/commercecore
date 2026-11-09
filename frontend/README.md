@@ -2,7 +2,7 @@
 
 React 19 + TypeScript + Vite 8 frontend workspace for the CommerceCore multi-merchant commerce project.
 
-**Status (2026-11-01):** Bootstrap [PR #6](https://github.com/Spsk1313/commercecore/pull/6) merged; open [PR #7](https://github.com/Spsk1313/commercecore/pull/7) adds a development merchant-ID search that uses a Vite `/api` proxy, typed fetch client, input validation, loading/error state and Spring Boot/PostgreSQL. No merchant dashboard, storefront, authentication or production deployment.
+**Status (2026-11-09):** [PR #6](https://github.com/Spsk1313/commercecore/pull/6) frontend bootstrap and [PR #7](https://github.com/Spsk1313/commercecore/pull/7) local merchant-ID integration **merged**; [PR #8](https://github.com/Spsk1313/commercecore/pull/8) backend identity/membership schema **merged**. [PR #9](https://github.com/Spsk1313/commercecore/pull/9) backend email-verification foundation is **open**, but adds **no new frontend functionality**. Current UI remains the temporary merchant lookup through Vite's `/api` proxy. No merchant dashboard, storefront, registration/login screens, protected merchant access or production deployment.
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ There is currently **no frontend unit-test or browser end-to-end test suite**. A
 
 ## Continuous integration
 
-[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [PR #7 frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) passed at application head `1d2396c`; the [subsequent documentation-audit run](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) also passed at `cd9e723`. Confirm checks on any newer head.
+[Frontend CI](../.github/workflows/frontend-ci.yml) runs on pull requests targeting `main`. It uses Ubuntu, Node.js 22, `npm ci`, `npm run lint`, and `npm run build`; caching is keyed using `frontend/package-lock.json`. [PR #7 frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/41375979226) and its [documentation-head CI](https://github.com/Spsk1313/commercecore/actions/runs/41376782817) passed; PR #8 latest-head frontend CI passed. [PR #9 initial-head frontend CI](https://github.com/Spsk1313/commercecore/actions/runs/42698924048) also passed at `6e7be22` as a regression check, despite no frontend code changes. Recheck CI after new documentation commits.
 
 Backend CI runs separately. See the [root README](../README.md) and [engineering evidence ledger](../docs/EVIDENCE_LEDGER.md).
 
@@ -54,6 +54,7 @@ Backend CI runs separately. See the [root README](../README.md) and [engineering
 - No forced dependency downgrade/major-version override was applied. Re-evaluate compatible fixes and re-run the full audit on a later dependency-maintenance checkpoint.
 - A browser-to-API-to-PostgreSQL read path was manually verified locally, not automated as an end-to-end test. Merchant authentication, tenant authorization and product workflows are not implemented.
 
+
 ## Next engineering milestone
 
-Review and squash-merge PR #7 after final-head CI, then move to COM-003: secure merchant onboarding, store ownership and negative cross-tenant authorization tests. Do not polish the temporary ID-search UI into a product feature.
+PR #9 completes the *backend verification foundation* once reviewed, CI-checked and merged. The frontend is unchanged by this slice. Next, add the secure registration/verification API and email workflow on the backend, followed by registration/login UI and genuinely authorized merchant onboarding. Keep the temporary merchant-ID form as an integration harness; don't mistake it for a user-facing storefront.

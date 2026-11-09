@@ -25,5 +25,6 @@ We need a clear customer order-ownership and security boundary for the first end
 - Merchant A cannot view/fulfill merchant B's orders; denied operations do not mutate state.
 - Integration tests and documented HTTP security behavior.
 
-## Follow-up
-Decide principal/account and merchant-membership model when designing identity. Integrate implementation and tests into COM-003/COM-006.
+## Follow-up (2026-11-09)
+
+PR #8 **merged** user and merchant membership persistence; PR #9 contains an **open** email-verification foundation. Neither introduces login/sessions, authenticated customer identity or checkout authorization. Decide account/session implementation, CSRF/browser security and customer/merchant principal mapping as COM-003 progresses. Implement the negative HTTP authorization and checkout invariants in COM-003/COM-006 before marking the policy implemented.

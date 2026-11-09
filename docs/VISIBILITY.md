@@ -27,4 +27,9 @@ Pick a specific engineer or relevant community; ask one precise question about a
 - Testimonials/screenshots require consent; avoid posting vulnerabilities before they are mitigated.
 
 ## Publication log
-No posts, external users, interviews, public outreach outcomes, or consented feedback attributable to CommerceCore are verified as of the 2026-11-01 PR #7 review. The local merchant-ID read path ([PR #7](https://github.com/Spsk1313/commercecore/pull/7)) provides narrow engineering integration evidence, **not** customer value, production readiness or external validation. Seek genuine merchant problem discovery and a working onboarding/catalog journey before claiming usefulness.
+
+**As of 2026-11-09:** No CommerceCore-specific public case study, independently verified external review, pilot merchant/user, customer outcome or consented testimonial has been recorded. PR #7 proves only local full-stack merchant read, PR #8 proves selected persistence constraints, and [PR #9](https://github.com/Spsk1313/commercecore/pull/9) adds a locally tested transactional email-verification foundation with 32 passing backend tests. None proves a production identity flow or market value.
+
+**Candidate engineering write-up after PR #9 merge:** Show why consuming a token and marking a user verified must share a transaction, including the deliberate `@Transactional` removal/failure experiment and PostgreSQL rollback check. Label it *development/test evidence*, not user adoption or security certification.
+
+**Next external-value milestone:** Interview real prospective merchants about pain points, obtain publication consent for any feedback, and deliver a protected onboarding/catalog journey before claiming impact.
