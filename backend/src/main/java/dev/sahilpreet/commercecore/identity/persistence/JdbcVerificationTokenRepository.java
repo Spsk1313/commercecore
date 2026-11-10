@@ -3,6 +3,7 @@ package dev.sahilpreet.commercecore.identity.persistence;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,19 @@ public class JdbcVerificationTokenRepository {
                 .param("tokenHash", tokenHash)
                 .query(Long.class)
                 .optional();
+    }
+
+    public void issue(Long userId, String tokenHash, OffsetDateTime expiresAt) {
+        String insertTokenQuery = """
+                INSERT INTO email_verification_tokens (user_id, token_hash, expires_at)
+                VALUES (:userId, :tokenHash, :expiresAt);
+                """;
+
+        jdbcClient.sql(insertTokenQuery)
+                .param("userId", userId)
+                .param("tokenHash", tokenHash)
+                .param("expiresAt", expiresAt)
+                .update();
+
     }
 }
