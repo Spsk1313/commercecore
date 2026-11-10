@@ -1,8 +1,11 @@
 package dev.sahilpreet.commercecore.identity.application;
 
+import org.springframework.stereotype.Component;
+
 import java.security.SecureRandom;
 import java.util.Base64;
 
+@Component
 public final class VerificationTokenGenerator {
 
     private static final int TOKEN_BYTES = 32;

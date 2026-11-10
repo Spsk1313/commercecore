@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Container;
@@ -16,9 +17,15 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -102,6 +109,78 @@ public class JdbcVerificationTokenRepositoryIntegrationTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    @Transactional
+    void shouldPersistVerificationTokenForNewUser() {
+        Long userId = createUser();
+        String tokenHash = generateHash();
+
+        OffsetDateTime expiresAt = OffsetDateTime.now(ZoneOffset.UTC)
+                .plusMinutes(30)
+                .truncatedTo(ChronoUnit.MICROS);
+
+        jdbcVerificationTokenRepository.issue(userId, tokenHash, expiresAt);
+
+        var token = jdbcClient.sql("""
+                        SELECT token_hash, expires_at, consumed_at
+                        FROM email_verification_tokens
+                        WHERE user_id = :userId
+                        """)
+                .param("userId", userId)
+                .query((rs, rowNum) -> new VerificationTokenRow(
+                        rs.getString("token_hash"),
+                        rs.getObject("expires_at", OffsetDateTime.class),
+                        rs.getObject("consumed_at", OffsetDateTime.class)
+                ))
+                .single();
+
+        assertAll(
+                () -> assertEquals(tokenHash, token.hash()),
+                () -> assertEquals(expiresAt.toInstant(), token.expiresAt().toInstant()),
+                () -> assertNull(token.consumedAt())
+        );
+    }
+
+    @Test
+    void shouldRejectDuplicateInitialTokenIssuance() {
+        Long userId = createUser();
+        try {
+
+            String hashA = generateHash();
+            String hashB = generateHash();
+
+            OffsetDateTime expiresAt = OffsetDateTime.now(ZoneOffset.UTC)
+                    .plusMinutes(30);
+
+            jdbcVerificationTokenRepository.issue(userId, hashA, expiresAt);
+
+            assertThrows(
+                    DataIntegrityViolationException.class,
+                    () -> jdbcVerificationTokenRepository.issue(userId, hashB, expiresAt)
+            );
+
+            List<String> storedHashes = jdbcClient.sql("""
+                            SELECT token_hash
+                            FROM email_verification_tokens
+                            WHERE user_id = :userId
+                            """)
+                    .param("userId", userId)
+                    .query(String.class)
+                    .list();
+
+            assertEquals(List.of(hashA), storedHashes);
+        } finally {
+            cleanupUser(userId);
+        }
+    }
+
+    private record VerificationTokenRow(
+            String hash,
+            OffsetDateTime expiresAt,
+            OffsetDateTime consumedAt
+    ) {
+    }
+
     private Long createUser() {
         String createUserQuery = """
                 INSERT INTO users (email, password_hash)
@@ -110,7 +189,7 @@ public class JdbcVerificationTokenRepositoryIntegrationTest {
                 """;
 
         Optional<Long> optionalUserId = jdbcClient.sql(createUserQuery)
-                .param("alice@example.com")
+                .param(generateEmail())
                 .param("password_hash")
                 .query(Long.class)
                 .optional();
@@ -125,5 +204,25 @@ public class JdbcVerificationTokenRepositoryIntegrationTest {
 
         String token = tokenGenerator.generate();
         return tokenHasher.hash(token);
+    }
+
+    private String generateEmail() {
+        return "verify-" + UUID.randomUUID() + "@example.com";
+    }
+
+    private void cleanupUser(Long userId) {
+        jdbcClient.sql("""
+                        DELETE FROM email_verification_tokens
+                        WHERE user_id = :userId
+                        """)
+                .param("userId", userId)
+                .update();
+
+        jdbcClient.sql("""
+                        DELETE FROM users
+                        WHERE id = :userId
+                        """)
+                .param("userId", userId)
+                .update();
     }
 }
